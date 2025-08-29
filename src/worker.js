@@ -572,4 +572,3 @@ export default {
     }
   },
 };
-```
