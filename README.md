@@ -34,7 +34,7 @@
 
 ### 第 1 步：准备（Cloudflare 控制台）
 1. 创建 R2 存储桶（用于图片上传）
-   - Cloudflare 控制台 → R2 → 创建存储桶（示例名称：`ai-image-uploads`）。
+   - Cloudflare 控制台 → R2 → 创建存储桶（示例名称：`ai-image`）。
 2. 创建 KV 命名空间（用于速率限制）
    - Cloudflare 控制台 → Workers & Pages → KV → 创建命名空间（示例名称：`AI_RATE_LIMITER`）。
 
@@ -56,7 +56,7 @@
      | 绑定类型 | 变量名称 | 说明 |
      |---|---:|---|
      | Workers AI | AI | （无需选择命名空间） |
-     | R2 存储桶 | IMAGE_BUCKET | 选择第 1 步创建的 R2 存储桶（例如 `ai-image-uploads`） |
+     | R2 存储桶 | IMAGE_BUCKET | 选择第 1 步创建的 R2 存储桶（例如 `ai-image`） |
      | KV 命名空间 | RATE_LIMITER_KV | 选择第 1 步创建的 KV 命名空间（例如 `AI_RATE_LIMITER`） |
 
 2. 设置环境变量（Settings → Variables）
