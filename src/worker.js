@@ -73,7 +73,7 @@ const RANDOM_PROMPTS = [
 ];
 
 // 访问密码
-const PASSWORDS = ['admin123'];
+const PASSWORDS = ['10000'];
 
 // 图片上传配置
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -528,3 +528,4 @@ function clampOutputs(value, model) {
   const outputs = parseInt(value);
   return Math.min(model.max_outputs, Math.max(1, outputs));
 }
+
