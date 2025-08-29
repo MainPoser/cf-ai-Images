@@ -72,54 +72,36 @@ const RANDOM_PROMPTS = [
   'beautiful girl, breasts, curvy, looking down scope, looking away from viewer, laying on the ground, laying ontop of jacket, aiming a sniper rifle, dark braided hair, backwards hat, armor, sleeveless, arm sleeve tattoos, muscle tone, dogtags, sweaty, foreshortening, depth of field, at night, night, alpine, lightly snowing, dusting of snow, Closeup, detailed face, freckles',
 ];
 
-
 // --- 新增：速率限制配置 ---
-// 说明：你需要创建一个 KV 命名空间并将其绑定为 'RATE_LIMITER_KV'
 const RATE_LIMIT = {
-  WINDOW_SECONDS: 60, // 限制周期（秒）
-  MAX_REQUESTS: 10,   // 在一个周期内允许的最大请求数
+  WINDOW_SECONDS: 60,
+  MAX_REQUESTS: 10,
 };
 
 /**
  * 检查 IP 速率限制
- * @param {Request} request - 传入的请求
- * @param {object} env - Worker 的环境变量
- * @returns {Promise<boolean>} - 如果允许请求，则返回 true
  */
 async function checkRateLimit(request, env) {
-  // 如果没有绑定 KV，则跳过速率限制
   if (!env.RATE_LIMITER_KV) {
     console.log("未绑定 RATE_LIMITER_KV，跳过速率限制。");
     return true;
   }
-
-  // 从请求头中获取客户端 IP 地址
   const ip = request.headers.get('cf-connecting-ip') || 'unknown';
   const key = `rate-limit:${ip}`;
-  
-  // 从 KV 中获取当前 IP 的请求记录
   const data = await env.RATE_LIMITER_KV.get(key, { type: 'json' }) || { count: 0, start: Date.now() };
-
   const now = Date.now();
   const elapsedSeconds = (now - data.start) / 1000;
 
   if (elapsedSeconds > RATE_LIMIT.WINDOW_SECONDS) {
-    // 如果时间窗口已过，重置计数器和开始时间
     data.count = 0;
     data.start = now;
   }
-
   data.count++;
-  
-  // 将更新后的记录存回 KV，并设置过期时间（比窗口稍长一点以防边缘情况）
   await env.RATE_LIMITER_KV.put(key, JSON.stringify(data), {
     expirationTtl: RATE_LIMIT.WINDOW_SECONDS + 5
   });
-
-  // 检查请求次数是否超过限制
   return data.count <= RATE_LIMIT.MAX_REQUESTS;
 }
-
 
 export default {
   async fetch(request, env) {
@@ -133,20 +115,17 @@ export default {
     };
 
     if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: corsHeaders
-      });
+      return new Response(null, { headers: corsHeaders });
     }
 
     try {
       const url = new URL(request.url);
       const path = url.pathname;
       
-      // --- 修改：从环境变量获取密码 ---
-      // PASSWORDS 是一个逗号分隔的字符串
+      // 从环境变量获取密码
       const passwords = (env.PASSWORDS || "").split(',').map(p => p.trim()).filter(Boolean);
 
-      // --- 新增：认证检查辅助函数 ---
+      // 认证检查辅助
       const isAuthed = (req) => {
         if (passwords.length === 0) return true;
         const cookieHeader = req.headers.get('cookie') || '';
@@ -180,43 +159,36 @@ export default {
           headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Set-Cookie': cookie }
         });
       
-      // --- 新增：处理图片上传到 R2 的接口 ---
+      // 上传到 R2
       } else if (path === '/api/upload' && request.method === 'POST') {
-        // 检查是否已认证
         if (!isAuthed(request)) {
           return new Response(JSON.stringify({ error: '需要认证才能上传' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }});
         }
-        // 检查 R2 是否已绑定
         if (!env.IMAGE_BUCKET) {
           return new Response(JSON.stringify({ error: '服务端未配置 R2 存储桶' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }});
         }
 
-        // 生成一个随机的唯一文件名
         const key = `${crypto.randomUUID()}.png`;
-        // 将上传的图片放入 R2，并设置 1 小时后自动删除
         await env.IMAGE_BUCKET.put(key, request.body, {
           httpMetadata: { contentType: 'image/png' },
           customMetadata: { uploadedBy: request.headers.get('cf-connecting-ip') || 'unknown' },
-          // 设置对象在 3600 秒（1小时）后过期
           expirationTtl: 3600
         });
-        
-        // 返回成功信息和文件 key
         return new Response(JSON.stringify({ success: true, key: key }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }});
       
-      } else if (request.method === 'POST' && path === '/') { // 图像生成主逻辑
-        // --- 新增：在生成图片前进行速率限制检查 ---
+      } else if (request.method === 'POST' && path === '/') {
+        // 速率限制
         const allowed = await checkRateLimit(request, env);
         if (!allowed) {
           return new Response(JSON.stringify({ error: '请求过于频繁，请稍后再试。' }), {
-            status: 429, // 429 Too Many Requests
+            status: 429,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
 
         const data = await request.json();
         
-        // 认证检查
+        // 认证
         if (passwords.length > 0 && !isAuthed(request)) {
           return new Response(JSON.stringify({ error: '需要正确的访问密码' }), {
             status: 403,
@@ -236,7 +208,7 @@ export default {
           const model = selectedModel.key;
           let inputs = {};
           
-          // --- 新增：从 R2 获取图片的辅助函数 ---
+          // 从 R2 获取图片
           const getImageFromR2 = async (key, label) => {
             if (!env.IMAGE_BUCKET) {
               return { error: `服务端未配置 R2 存储桶` };
@@ -244,12 +216,10 @@ export default {
             if (!key) {
               return { error: `缺少 ${label} 的文件 key` };
             }
-            // 从 R2 中获取图片对象
             const object = await env.IMAGE_BUCKET.get(key);
             if (object === null) {
               return { error: `${label} (key: ${key}) 在 R2 中未找到，可能已过期或上传失败` };
             }
-            // 将图片内容转为字节数组
             const bytes = new Uint8Array(await object.arrayBuffer());
             return { bytes };
           };
@@ -262,7 +232,7 @@ export default {
             return v;
           };
           
-          // --- 修改：输入参数处理逻辑 ---
+          // 输入参数处理
           if (data.model === 'flux-1-schnell') {
             let steps = data.num_steps || 6;
             if (steps >= 8) steps = 8;
@@ -276,7 +246,7 @@ export default {
             data.model === 'stable-diffusion-v1-5-img2img' ||
             data.model === 'stable-diffusion-v1-5-inpainting'
           ) {
-            // 图生图 / 局部重绘，现在从 R2 获取图片
+            // 图生图 / 局部重绘：从 R2 获取图片
             if (!data.image_key) {
               return new Response(JSON.stringify({ error: '该模型需要上传输入图像' }), {
                 status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -319,23 +289,34 @@ export default {
               ...(maskBytes ? { mask: [...maskBytes], mask_image: [...maskBytes] } : {})
             };
           } else {
-            // 默认的文生图参数
+            // 默认文生图（包括 SDXL）——修复点：移除 strength，并做尺寸限幅与对齐
+            const isSDXL = data.model === 'stable-diffusion-xl-base-1.0';
+            let height = sanitizeDimension(parseInt(data.height, 10) || 1024, 1024);
+            let width = sanitizeDimension(parseInt(data.width, 10) || 1024, 1024);
+            if (isSDXL) {
+              height = Math.min(height, 1024);
+              width = Math.min(width, 1024);
+            }
+
             inputs = {
               prompt: data.prompt || 'cyberpunk cat',
               negative_prompt: data.negative_prompt || '',
-              height: data.height || 1024,
-              width: data.width || 1024,
-              num_steps: data.num_steps || 20,
-              strength: data.strength || 0.1,
-              guidance: data.guidance || 7.5,
+              height,
+              width,
+              num_steps: clamp(parseInt(data.num_steps, 10) || 20, 1, 50),
+              guidance: clamp(parseFloat(data.guidance ?? 7.5), 0.0, 30.0),
               seed: data.seed || parseInt((Math.random() * 1024 * 1024).toString(), 10),
+              // 注意：不在文生图里传 strength（仅 img2img/inpainting 使用）
             };
           }
 
           console.log(`使用模型 ${model} 生成图片，提示词: ${inputs.prompt.substring(0, 50)}...`);
           
           try {
-            const numOutputs = clamp(parseInt(data.num_outputs, 10) || 1, 1, 8);
+            // 修复点：SDXL 并发限制为最多 2
+            const hardMax = (data.model === 'stable-diffusion-xl-base-1.0') ? 2 : 8;
+            const numOutputs = clamp(parseInt(data.num_outputs, 10) || 1, 1, hardMax);
+
             const generateOnce = async (seedOffset = 0) => {
               const localInputs = { ...inputs };
               if (typeof localInputs.seed === 'number') localInputs.seed = localInputs.seed + seedOffset;
@@ -394,18 +375,18 @@ export default {
                 headers: { ...corsHeaders, 'content-type': 'image/png', 'X-Used-Model': selectedModel.id, ...(inputs.seed ? { 'X-Seed': String(inputs.seed) } : {}), 'X-Image-Bytes': String(bytes.length), 'X-Server-Seconds': serverSeconds.toFixed(3) }
               });
             } else {
-                let imageByteSize = undefined;
-                try {
-                  if (response && typeof response === 'object') {
-                    if (response instanceof Uint8Array) imageByteSize = response.length;
-                    if (typeof response.byteLength === 'number') imageByteSize = response.byteLength;
-                  }
-                } catch (_) {}
-                return new Response(response, {
-                  headers: { ...corsHeaders, 'content-type': 'image/png', 'X-Used-Model': selectedModel.id, ...(inputs.seed ? { 'X-Seed': String(inputs.seed) } : {}), ...(imageByteSize ? { 'X-Image-Bytes': String(imageByteSize) } : {}), 'X-Server-Seconds': serverSeconds.toFixed(3) }
-                });
-              }
-            } catch (aiError) {
+              let imageByteSize = undefined;
+              try {
+                if (response && typeof response === 'object') {
+                  if (response instanceof Uint8Array) imageByteSize = response.length;
+                  if (typeof response.byteLength === 'number') imageByteSize = response.byteLength;
+                }
+              } catch (_) {}
+              return new Response(response, {
+                headers: { ...corsHeaders, 'content-type': 'image/png', 'X-Used-Model': selectedModel.id, ...(inputs.seed ? { 'X-Seed': String(inputs.seed) } : {}), ...(imageByteSize ? { 'X-Image-Bytes': String(imageByteSize) } : {}), 'X-Server-Seconds': serverSeconds.toFixed(3) }
+              });
+            }
+          } catch (aiError) {
             console.error('AI 生成错误:', aiError);
             return new Response(JSON.stringify({ error: '图像生成失败', details: aiError && (aiError.message || aiError.toString()), model: selectedModel.id }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }});
           }
