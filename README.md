@@ -1,6 +1,3 @@
-<p align="center">
-  <img alt="text-to-image" src="https://user-images.githubusercontent.com/11311393/230752554-52a7c133-b78f-4131-bdaa-c7b884a49c41.png" width="128" height="128" />
-</p>
 
 <div align="center">
   <h1>Text2img · Cloudflare Workers (功能增强版)</h1>
@@ -78,7 +75,7 @@
 3.  接下来，点击 **设置** → **变量**。
 4.  在“环境变量”部分，点击“添加变量”，设置你的访问密码：
     * 变量名称: `PASSWORDS`
-    * 变量值: 输入你的密码，例如 `admin123`。如果你想设置多个密码，请用英文逗号隔开，例如 `pass1,pass2,secret`。
+    * 变量值: 输入你的密码，例如 `10000`。
     * *提示：如果将此变量留空或不创建，则网站无需密码即可公开访问。*
 
 ### 第 4 步：完成部署
@@ -94,6 +91,3 @@
 -   **[zhumengkang/cf-ai-image](https://github.com/zhumengkang/cf-ai-image)**
 -   **[huarzone/Text2img-Cloudflare-Workers](https://github.com/huarzone/Text2img-Cloudflare-Workers)**
 
-## 📄 开源许可
-
-本项目基于 [MIT License](LICENSE) 开源。
