@@ -2,8 +2,6 @@
 <div align="center">
   <h1>Text2img · Cloudflare Workers (功能增强版)</h1>
   <p>一个功能强大、开箱即用的在线文生图/图生图服务，完全基于 Cloudflare Workers AI 平台构建。</p>
-  <p><strong><a href="https://<你的Worker访问地址>/" target="_blank">在线体验 &raquo;</a></strong></p>
-</div>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github.com/huarzone/Text2img-Cloudflare-Workers/raw/main/public/top-dark.png">
