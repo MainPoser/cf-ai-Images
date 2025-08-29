@@ -1,6 +1,6 @@
 /**
- * @author: kared
- * @last_edit_time: 2025-05-15
+ * @author: 10000
+ * @last_edit_time: 2025-08-29
  * @description: 增强版AI文生图服务Worker
  */
 
@@ -528,4 +528,5 @@ function clampOutputs(value, model) {
   const outputs = parseInt(value);
   return Math.min(model.max_outputs, Math.max(1, outputs));
 }
+
 
