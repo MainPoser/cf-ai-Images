@@ -9,7 +9,6 @@
     <link rel="icon" type="image/x-icon" href="https://cdn.jsdelivr.net/gh/huarzone/Text2img-Cloudflare-Workers@main/public/favicon.ico">
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <style>
-        /* 样式保持不变 */
         :root {
             --primary: #5046e5;
             --primary-light: #6e67eb;
@@ -50,29 +49,25 @@
         }
         
         .btn {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-radius: 0.375rem;
             transition: all 0.3s;
         }
-
-        .btn:focus {
-            outline: none;
-        }
+        .btn:focus { outline: none; }
         
         .btn-primary {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
+            box-shadow: 0 6px 12px rgba(80,70,229,0.15);
         }
-        
         .btn-primary:hover {
-            background-color: var(--primary-light);
             transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 16px rgba(80,70,229,0.25);
+            filter: brightness(1.03);
         }
-        
         .btn-primary:active {
-            background-color: var(--primary-dark);
             transform: translateY(0);
+            filter: brightness(0.98);
         }
         
         .btn-secondary {
@@ -80,39 +75,45 @@
             color: var(--text);
             border: 1px solid var(--border);
         }
-        
         .btn-secondary:hover {
             background-color: var(--border);
             transform: translateY(-1px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-        
-        .btn-secondary:active {
-            transform: translateY(0);
-        }
+        .btn-secondary:active { transform: translateY(0); }
         
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
         .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
         }
+        .card:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(1200px circle at var(--x, 0px) var(--y, 0px), rgba(80,70,229,0.08), transparent 40%);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .card:hover:before { opacity: 1; }
         
         input, select, textarea {
             background-color: var(--background);
             color: var(--text);
             border: 1px solid var(--border);
-            border-radius: 0.375rem;
+            border-radius: 0.5rem;
             padding: 0.5rem 0.75rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             width: 100%;
         }
-        
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
@@ -129,7 +130,6 @@
             outline: none;
             margin: 10px 0;
         }
-        
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -139,13 +139,12 @@
             background: var(--primary);
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(80,70,229,0.3);
         }
-        
         .slider::-webkit-slider-thumb:hover {
             transform: scale(1.2);
             box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.2);
         }
-        
         .slider::-moz-range-thumb {
             width: 18px;
             height: 18px;
@@ -155,7 +154,6 @@
             transition: all 0.2s ease;
             border: none;
         }
-        
         .slider::-moz-range-thumb:hover {
             transform: scale(1.2);
             box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.2);
@@ -164,26 +162,15 @@
         .animate-pulse {
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: .5;
-            }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
         
         .loading-mask {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(0,0,0,0.6);
+            background: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65));
             border-radius: 0.5rem;
             z-index: 10;
             backdrop-filter: blur(4px);
@@ -197,8 +184,8 @@
             justify-content: center;
             background-color: var(--card-bg);
             position: relative;
-            border-radius: 0.5rem;
-            max-height: 400px;
+            border-radius: 0.75rem;
+            max-height: 420px;
             margin: 0 auto;
             width: 100%;
         }
@@ -228,20 +215,10 @@
             border: 1px solid var(--border);
         }
         
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        
+        .tooltip { position: relative; display: inline-block; }
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 200px;
@@ -261,66 +238,59 @@
             border: 1px solid var(--border);
             font-size: 0.75rem;
         }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         @media (max-width: 768px) {
-            .mobile-flex-col {
-                flex-direction: column;
-            }
-            
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-            
-            .image-container {
-                max-height: 400px;
-            }
+            .mobile-flex-col { flex-direction: column; }
+            .container { padding-left: 1rem; padding-right: 1rem; }
+            .image-container { max-height: 400px; }
         }
-        
-        @media (min-width: 1024px) {
-            .container {
-                max-width: 1200px;
-            }
+        @media (min-width: 1024px) { .container { max-width: 1200px; } }
+
+        .text-primary { color: var(--primary); }
+
+        .k-badge {
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: var(--secondary);
         }
-        
-        .history-item {
-            position: relative;
-            height: 120px;
-            border-radius: 0.375rem;
-            overflow: hidden;
-            background-color: var(--border);
-        }
-        
-        .history-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            display: flex;
+        .chip {
+            border: 1px solid var(--border);
+            background: var(--secondary);
+            padding: 6px 10px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: transform 0.15s ease, background 0.25s ease, box-shadow 0.25s ease;
         }
-        
-        .history-item:hover .history-overlay {
-            opacity: 1;
+        .chip:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(0,0,0,0.06); }
+        .chip.active { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; border-color: var(--primary); }
+
+        .gradient-bar {
+            width: 64px; height: 4px; border-radius: 999px; margin-top: 6px;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
         }
+
+        .mask-canvas { touch-action: none; cursor: crosshair; }
+        .mask-stage { position: relative; }
+        .mask-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.18; pointer-events: none; border-radius: 0.5rem; }
+        .mask-stage canvas { position: relative; display: block; border-radius: 0.5rem; }
     </style>
 </head>
 <body class="min-h-screen py-4">
     <div class="container mx-auto px-4 py-4 max-w-6xl">
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl md:text-3xl font-bold flex items-center">
-                🐳🐳🐳&nbsp;AI 文生图服务
+                🐳&nbsp;在线文生图服务
+                <div class="gradient-bar ml-3"></div>
             </h1>
             <div class="flex items-center space-x-2">
                 <button id="themeToggle" class="btn btn-secondary p-2 h-10 w-10 flex items-center justify-center" aria-label="切换暗色主题">
@@ -345,33 +315,28 @@
                             <i class="fa-solid fa-dice mr-1"></i> 随机提示词
                         </button>
                     </div>
-                    
-                    <div>
-                        <label for="password" class="block text-sm font-medium mb-1 flex items-center">
-                            <i class="fa-solid fa-key mr-1 text-xs"></i> 访问密码
-                        </label>
-                        <input type="password" id="password" placeholder="请输入访问密码" class="w-full" value="admin123">
-                    </div>
-                    
+
                     <div>
                         <label for="prompt" class="block text-sm font-medium mb-1 flex items-center">
                             <i class="fa-solid fa-wand-magic-sparkles mr-1 text-xs"></i> 正向提示词
                         </label>
-                        <textarea id="prompt" rows="3" placeholder="描述您想要生成的图像内容及样式..." class="w-full">cyberpunk cat</textarea>
-                        <div class="mt-2 flex flex-wrap gap-2">
-                            <button class="btn btn-secondary text-xs" onclick="addPromptSuggestion('masterpiece, best quality, ultra-detailed')">添加画质描述</button>
-                            <button class="btn btn-secondary text-xs" onclick="addPromptSuggestion('dramatic lighting, volumetric rays')">添加光影效果</button>
-                            <button class="btn btn-secondary text-xs" onclick="addPromptSuggestion('in the style of studio ghibli, watercolor painting')">添加艺术风格</button>
+                        <textarea id="prompt" rows="3" placeholder="描述您想要生成的图像内容及样式..." class="w-full"></textarea>
+                        <!-- 风格预设按钮组 -->
+                        <div id="stylePresets" class="mt-2">
+                            <span class="chip" data-style="cyberpunk">赛博朋克</span>
+                            <span class="chip" data-style="watercolor">水彩画</span>
+                            <span class="chip" data-style="anime">动漫</span>
+                            <span class="chip" data-style="photoreal">写实感</span>
                         </div>
                     </div>
-                    
+
                     <div>
                         <label for="negative_prompt" class="block text-sm font-medium mb-1 flex items-center">
                             <i class="fa-solid fa-ban mr-1 text-xs"></i> 反向提示词
                         </label>
-                        <textarea id="negative_prompt" rows="2" placeholder="描述在生成的图像中要避免的元素文本..." class="w-full"></textarea>
+                        <textarea id="negative_prompt" rows="2" placeholder="描述要避免的元素，提升画面质量..." class="w-full"></textarea>
                     </div>
-                    
+
                     <div>
                         <label for="model" class="block text-sm font-medium mb-1 flex items-center">
                             <i class="fa-solid fa-robot mr-1 text-xs"></i> 文生图模型
@@ -382,29 +347,37 @@
                         <p class="text-xs text-gray-500 mt-2">部分模型需要提供图片URL或遮罩URL（见下方输入框）。</p>
                     </div>
 
+                    <!-- 图生图/重绘扩展 -->
                     <div id="img2imgInputs" class="hidden space-y-2">
                         <div>
                             <label for="image_url" class="block text-sm font-medium mb-1 flex items-center">
-                                <i class="fa-solid fa-image mr-1 text-xs"></i> 输入图像URL（必填）
+                                <i class="fa-solid fa-image mr-1 text-xs"></i> 输入图像URL（可直接上传）
                             </label>
-                            <input type="url" id="image_url" placeholder="https://example.com/your-image.png" class="w-full">
+                            <div class="flex items-center gap-2">
+                                <input type="url" id="image_url" placeholder="https://example.com/your-image.png" class="w-full">
+                                <label class="btn btn-secondary text-sm cursor-pointer">
+                                    <input type="file" id="image_file" accept="image/*" class="hidden">
+                                    <i class="fa-solid fa-upload mr-1"></i> 上传
+                                </label>
+                            </div>
+                            <p id="imageUploadHint" class="text-xs text-gray-500 mt-1">选择本地图片自动上传到 R2，并填充 URL</p>
                         </div>
-                        <div>
-                            <label for="imageUpload" class="block text-sm font-medium mb-1 flex items-center">
-                                <i class="fa-solid fa-upload mr-1 text-xs"></i> 或上传图像
-                            </label>
-                            <input type="file" id="imageUpload" accept="image/*" class="w-full">
-                            <div id="uploadStatus" class="text-xs mt-1 hidden"></div>
-                        </div>
-                        <div>
+                        <div id="maskInputBlock" class="hidden">
                             <label for="mask_url" class="block text-sm font-medium mb-1 flex items-center">
-                                <i class="fa-solid fa-mask mr-1 text-xs"></i> 遮罩图像URL（必填，inpainting 使用）
+                                <i class="fa-solid fa-mask mr-1 text-xs"></i> 遮罩图像URL（可用编辑器生成）
                             </label>
-                            <input type="url" id="mask_url" placeholder="https://example.com/your-mask.png" class="w-full">
+                            <div class="flex items-center gap-2">
+                                <input type="url" id="mask_url" placeholder="https://example.com/your-mask.png" class="w-full">
+                                <button id="openMaskEditor" class="btn btn-secondary text-sm">
+                                    <i class="fa-solid fa-pen-nib mr-1"></i> 遮罩编辑器
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">浏览器中绘制遮罩，导出并上传，自动填充 URL</p>
                         </div>
                     </div>
-                    
-                    <div class="mt-2">
+
+                     <!-- 生成数量下拉 -->
+                    <div id="numOutputsContainer">
                         <label for="num_outputs" class="block text-sm font-medium mb-1 flex items-center">
                             <i class="fa-solid fa-layer-group mr-1 text-xs"></i> 生成数量
                         </label>
@@ -414,6 +387,9 @@
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
                         </select>
                     </div>
                 </div>
@@ -458,7 +434,7 @@
                                 </label>
                                 <span id="num_stepsValue" class="text-sm font-mono">20</span>
                             </div>
-                            <input type="range" id="num_steps" min="1" max="20" step="1" value="20" class="slider w-full">
+                            <input type="range" id="num_steps" min="1" max="50" step="1" value="20" class="slider w-full">
                         </div>
                         
                         <div>
@@ -485,13 +461,6 @@
                             </div>
                             <p class="text-xs text-gray-500 mt-1">留空则随机生成</p>
                         </div>
-                        
-                        <div id="paramPreview" class="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">
-                            <div class="font-medium mb-1">当前参数预览:</div>
-                            <div>分辨率: <span id="previewWidth">1024</span>×<span id="previewHeight">1024</span></div>
-                            <div>步数: <span id="previewSteps">20</span> | 引导系数: <span id="previewGuidance">7.5</span></div>
-                            <div>种子: <span id="previewSeed">随机</span></div>
-                        </div>
                     </div>
                 </div>
                 
@@ -501,7 +470,7 @@
             </div>
             
             <!-- 右侧图像展示 -->
-            <div class="w-full lg:w-3/5">
+            <div class="w-full lg:w-3/5 space-y-4">
                 <div class="card h-full p-4 space-y-4 fade-in">
                     <div class="flex justify-between items-center">
                         <h2 class="text-lg font-semibold flex items-center">
@@ -542,8 +511,8 @@
                             <i class="fa-solid fa-image-portrait text-4xl mb-2"></i>
                             <p>点击生成按钮开始创建图像</p>
                         </div>
-                        <span id="imageStatus" class="bg-gray-300 text-gray-700 hidden">状态</span>
-                        
+                        <span id="imageStatus" class="bg-gray-300 text-gray-700 hidden" role="status" aria-live="polite">状态</span>
+                        <img id="aiImage" class="max-h-full max-w-full rounded hidden" alt="生成的图像">
                         <div id="imageGallery" class="grid grid-cols-4 gap-2 mt-3 hidden"></div>
                     </div>
                     
@@ -600,183 +569,173 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- 历史记录面板 -->
-                <div class="card p-4 mt-4 fade-in">
-                    <h2 class="text-lg font-semibold flex items-center mb-3">
-                        <i class="fa-solid fa-clock-rotate-left mr-2 text-primary"></i> 生成历史
-                    </h2>
-                    <div id="historyContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+
+                <!-- 历史记录卡片 -->
+                <div class="card p-4 space-y-3 fade-in">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-semibold flex items-center">
+                            <i class="fa-solid fa-clock-rotate-left mr-2 text-primary"></i>
+                            历史记录
+                        </h2>
+                        <div class="flex gap-2">
+                            <span class="k-badge" id="historyCount">0 条</span>
+                            <button id="clearHistory" class="btn btn-secondary text-sm py-1 px-3">
+                                <i class="fa-solid fa-trash mr-1"></i> 清空
+                            </button>
+                        </div>
+                    </div>
+                    <div id="historyGrid" class="grid grid-cols-5 gap-2"></div>
+                    <p id="historyEmpty" class="text-xs text-gray-500">暂无历史记录</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遮罩编辑器模态层 -->
+    <div id="maskEditorModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+        <div class="card p-4 w-full max-w-3xl bg-white dark:bg-gray-800">
+            <h3 class="text-lg font-semibold mb-3 flex items-center">
+                <i class="fa-solid fa-pen-nib mr-2 text-primary"></i> 遮罩编辑器
+            </h3>
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1 mask-stage">
+                    <img id="maskBaseImg" src="" alt="遮罩底图">
+                    <canvas id="maskCanvas" class="w-full h-auto border border-gray-300 rounded mask-canvas"></canvas>
+                </div>
+                <div class="w-full md:w-56 space-y-3">
+                    <div>
+                        <label class="text-sm font-medium mb-1 block">画笔大小: <span id="brushSizeVal">30</span></label>
+                        <input type="range" id="brushSize" min="5" max="80" value="30" class="slider w-full">
+                    </div>
+                    <div class="space-y-2">
+                        <button id="maskClear" class="btn btn-secondary w-full"><i class="fa-solid fa-eraser mr-1"></i> 清空画布</button>
+                        <button id="maskApply" class="btn btn-primary w-full"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> 导出并上传</button>
+                    </div>
+                    <p class="text-xs text-gray-500">在画布上涂抹白色区域进行重绘。透明部分将保持不变。</p>
+                </div>
+            </div>
+            <div class="text-right mt-3">
+                <button id="maskClose" class="btn btn-secondary">关闭</button>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // 初始化模型列表
+            // 初始化模型列表与状态
             let availableModels = [];
             let randomPromptsList = [];
             let currentImageParams = {};
             let currentImagesArray = null;
-            
+            let appliedStyleSet = new Set();
+
             // 加载模型列表
             async function loadModels() {
                 try {
                     const response = await fetch('/api/models');
-                    if (!response.ok) {
-                        throw new Error('加载模型列表失败');
-                    }
-                    
+                    if (!response.ok) throw new Error('加载模型列表失败');
                     availableModels = await response.json();
                     const modelSelect = document.getElementById('model');
-                    
-                    // 清空当前选项
                     modelSelect.innerHTML = '';
-                    
-                    // 添加新选项
                     availableModels.forEach(model => {
                         const option = document.createElement('option');
                         option.value = model.id;
                         option.textContent = `${model.name} - ${model.description}`;
                         option.dataset.requiresImage = model.requiresImage ? '1' : '0';
+                        if (model.requiresMask) option.dataset.requiresMask = '1';
                         modelSelect.appendChild(option);
                     });
-                    
-                    // 默认选择第二个模型（通常是更好的模型）
-                    if (availableModels.length > 1) {
-                        modelSelect.value = availableModels[1].id;
+                    if (availableModels.length > 0) {
+                        modelSelect.value = availableModels[0].id; // 默认第一个
+                        syncImg2ImgFields();
                     }
                 } catch (error) {
-                    console.error('加载模型列表错误:', error);
+                    console.error('Load models error:', error);
                     showStatus('加载模型列表失败', 'error');
                 }
             }
-            
+
             // 加载随机提示词
             async function loadRandomPrompts() {
                 try {
                     const response = await fetch('/api/prompts');
-                    if (!response.ok) {
-                        throw new Error('加载提示词失败');
-                    }
-                    
+                    if (!response.ok) throw new Error('加载提示词失败');
                     randomPromptsList = await response.json();
                 } catch (error) {
-                    console.error('加载提示词错误:', error);
-                    randomPromptsList = ['未能加载提示词列表，请重试或手动输入'];
+                    console.error('Load prompts error:', error);
+                    randomPromptsList = ['无法加载提示词库，请手动输入'];
                 }
             }
-            
-            // 初始化加载资源
+
+            // 初始化
             loadModels();
             loadRandomPrompts();
+
             // 检查是否需要登录
             (async () => {
                 try {
                     const res = await fetch('/api/config');
                     if (res.ok) {
                         const cfg = await res.json();
-                        if (cfg.require_password) {
-                            showLogin();
-                        }
+                        if (cfg.require_password) showLogin();
                     }
                 } catch (_) {}
             })();
-            
-            // 主题切换功能相关代码
+
+            // 主题切换
             const themeToggle = document.getElementById('themeToggle');
             const html = document.documentElement;
             const moonIcon = `<i class="fa-solid fa-moon"></i>`;
             const sunIcon = `<i class="fa-solid fa-sun"></i>`;
-            
-            // 检查系统主题或存储的主题并设置初始状态
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                html.classList.add('dark');
-                themeToggle.innerHTML = sunIcon;
-                themeToggle.setAttribute('aria-label', '切换亮色主题');
+                html.classList.add('dark'); themeToggle.innerHTML = sunIcon; themeToggle.setAttribute('aria-label', '切换亮色主题');
             } else {
-                html.classList.remove('dark');
-                themeToggle.innerHTML = moonIcon;
-                themeToggle.setAttribute('aria-label', '切换暗色主题');
+                html.classList.remove('dark'); themeToggle.innerHTML = moonIcon; themeToggle.setAttribute('aria-label', '切换暗色主题');
             }
-            
             themeToggle.addEventListener('click', function() {
-                if (html.classList.contains('dark')) {
-                    html.classList.remove('dark');
-                    localStorage.theme = 'light';
-                    themeToggle.innerHTML = moonIcon;
-                    themeToggle.setAttribute('aria-label', '切换暗色主题');
-                } else {
-                    html.classList.add('dark');
-                    localStorage.theme = 'dark';
-                    themeToggle.innerHTML = sunIcon;
-                    themeToggle.setAttribute('aria-label', '切换亮色主题');
-                }
+                if (html.classList.contains('dark')) { html.classList.remove('dark'); localStorage.theme = 'light'; themeToggle.innerHTML = moonIcon; themeToggle.setAttribute('aria-label', '切换暗色主题'); }
+                else { html.classList.add('dark'); localStorage.theme = 'dark'; themeToggle.innerHTML = sunIcon; themeToggle.setAttribute('aria-label', '切换亮色主题'); }
             });
-            
-            // 高级选项切换
+
+            // 高级选项
             const toggleAdvanced = document.getElementById('toggleAdvanced');
             const advancedOptions = document.getElementById('advancedOptions');
             const advancedIcon = document.getElementById('advancedIcon');
-            
             toggleAdvanced.addEventListener('click', function() {
-                if (advancedOptions.classList.contains('hidden')) {
-                    advancedOptions.classList.remove('hidden');
-                    advancedIcon.classList.remove('fa-chevron-down');
-                    advancedIcon.classList.add('fa-chevron-up');
-                    updateParamPreview(); // 更新参数预览
-                } else {
-                    advancedOptions.classList.add('hidden');
-                    advancedIcon.classList.remove('fa-chevron-up');
-                    advancedIcon.classList.add('fa-chevron-down');
-                }
+                if (advancedOptions.classList.contains('hidden')) { advancedOptions.classList.remove('hidden'); advancedIcon.classList.replace('fa-chevron-down','fa-chevron-up'); }
+                else { advancedOptions.classList.add('hidden'); advancedIcon.classList.replace('fa-chevron-up','fa-chevron-down'); }
             });
-            
+
             // 模型切换时显示/隐藏图生图字段
             const modelSelectEl = document.getElementById('model');
             const img2imgInputs = document.getElementById('img2imgInputs');
-            if (modelSelectEl && img2imgInputs) {
-                modelSelectEl.addEventListener('change', function() {
-                    const selected = availableModels.find(m => m.id === this.value);
-                    if (selected && selected.requiresImage) {
-                        img2imgInputs.classList.remove('hidden');
-                    } else {
-                        img2imgInputs.classList.add('hidden');
-                    }
-                    
-                    // 获取模型配置并更新UI
-                    updateModelConfig(this.value);
-                });
+            const maskInputBlock = document.getElementById('maskInputBlock');
+            function syncImg2ImgFields() {
+                const selId = modelSelectEl.value;
+                const meta = availableModels.find(m => m.id === selId);
+                if (meta && meta.requiresImage) img2imgInputs.classList.remove('hidden');
+                else img2imgInputs.classList.add('hidden');
+                if (meta && meta.requiresMask) maskInputBlock.classList.remove('hidden'); else maskInputBlock.classList.add('hidden');
             }
+            modelSelectEl.addEventListener('change', syncImg2ImgFields);
 
             // 滑块值显示
             const sliders = ['width', 'height', 'num_steps', 'guidance'];
             sliders.forEach(id => {
                 const slider = document.getElementById(id);
                 const valueDisplay = document.getElementById(`${id}Value`);
-                
                 slider.addEventListener('input', function() {
-                    if (id === 'width' || id === 'height') {
-                        valueDisplay.textContent = `${this.value}px`;
-                    } else if (id === 'guidance') {
-                        valueDisplay.textContent = parseFloat(this.value).toFixed(2);
-                    } else {
-                        valueDisplay.textContent = this.value;
-                    }
-                    
-                    // 更新参数预览
-                    updateParamPreview();
+                    if (id === 'width' || id === 'height') valueDisplay.textContent = `${this.value}px`;
+                    else if (id === 'guidance') valueDisplay.textContent = parseFloat(this.value).toFixed(2);
+                    else valueDisplay.textContent = this.value;
                 });
             });
-            
+
             // 随机种子
             document.getElementById('randomSeed').addEventListener('click', function() {
-                const randomSeed = Math.floor(Math.random() * 4294967295);
-                document.getElementById('seed').value = randomSeed;
-                updateParamPreview();
+                document.getElementById('seed').value = Math.floor(Math.random() * 4294967295);
             });
-            
+
             // 随机提示词
             document.getElementById('randomButton').addEventListener('click', function() {
                 if (randomPromptsList.length > 0) {
@@ -786,130 +745,98 @@
                     showStatus('提示词列表未加载，请稍后再试', 'error');
                 }
             });
-            
-            // 图片上传处理
-            document.getElementById('imageUpload').addEventListener('change', async function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                showStatus('上传图像中...', 'info');
-                const uploadStatus = document.getElementById('uploadStatus');
-                uploadStatus.textContent = '上传中...';
-                uploadStatus.classList.remove('hidden');
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('image', file);
-                    
-                    const response = await fetch('/api/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('上传失败');
+
+            // 风格预设
+            const PRESETS = {
+                cyberpunk: 'cyberpunk, neon lights, high contrast, rain, night, cinematic, dystopian',
+                watercolor: 'watercolor style, soft brush, ink wash, pastel tones, paper texture',
+                anime: 'anime style, cel shading, vibrant colors, clean line art, expressive eyes',
+                photoreal: 'photorealistic, ultra-detailed, sharp focus, 8k, high dynamic range, realistic lighting'
+            };
+            const styleContainer = document.getElementById('stylePresets');
+            styleContainer.addEventListener('click', (e) => {
+                const chip = e.target.closest('.chip');
+                if (!chip) return;
+                const key = chip.dataset.style;
+                if (!PRESETS[key]) return;
+                const promptEl = document.getElementById('prompt');
+                const tokens = PRESETS[key];
+                if (appliedStyleSet.has(key)) {
+                    const cur = promptEl.value;
+                    const removed = cur.replace(new RegExp(',?\\s*' + tokens.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '').replace(/\s{2,}/g, ' ').trim().replace(/^,/, '').trim();
+                    promptEl.value = removed;
+                    appliedStyleSet.delete(key);
+                    chip.classList.remove('active');
+                } else {
+                    if (!promptEl.value.includes(tokens)) {
+                        promptEl.value = `${promptEl.value.trim()}${promptEl.value.trim() ? ', ' : ''}${tokens}`.trim();
                     }
-                    
-                    const data = await response.json();
-                    document.getElementById('image_url').value = data.url;
-                    uploadStatus.textContent = '上传成功！';
-                    uploadStatus.className = 'text-green-600 text-xs mt-1';
-                    showStatus('图像上传成功', 'success');
-                } catch (error) {
-                    uploadStatus.textContent = `上传失败: ${error.message}`;
-                    uploadStatus.className = 'text-red-600 text-xs mt-1';
-                    showStatus(`上传失败: ${error.message}`, 'error');
+                    appliedStyleSet.add(key);
+                    chip.classList.add('active');
                 }
             });
             
+            // 卡片辉光效果
+            document.querySelectorAll('.card').forEach(card => {
+                card.onmousemove = e => {
+                    const rect = card.getBoundingClientRect();
+                    card.style.setProperty('--x', e.clientX - rect.left + 'px');
+                    card.style.setProperty('--y', e.clientY - rect.top + 'px');
+                };
+            });
+
             // 复制参数
             document.getElementById('copyParamsButton').addEventListener('click', function() {
                 if (!currentImageParams) return;
-                
-                // 创建参数文本
                 let paramsText = '--- AI绘图创作生成参数 ---\n';
                 for (const [key, value] of Object.entries(currentImageParams)) {
-                    if (key === 'password') continue; // 不复制密码
+                    if (key === 'password') continue;
                     paramsText += `${formatParamName(key)}: ${value}\n`;
                 }
-                
-                // 复制到剪贴板
                 navigator.clipboard.writeText(paramsText)
-                    .then(() => {
-                        showStatus('参数已复制到剪贴板', 'success');
-                    })
-                    .catch(err => {
-                        console.error('复制失败:', err);
-                        showStatus('复制参数失败', 'error');
-                    });
+                    .then(() => showStatus('参数已复制到剪贴板', 'success'))
+                    .catch(err => { console.error('Copy failed:', err); showStatus('复制参数失败', 'error'); });
             });
-            
-            // 格式化参数名称
+
             function formatParamName(name) {
                 const nameMap = {
-                    'prompt': '正向提示词',
-                    'negative_prompt': '反向提示词',
-                    'model': '文生图模型',
-                    'width': '图像宽度',
-                    'height': '图像高度',
-                    'num_steps': '迭代步数',
-                    'guidance': '引导系数',
-                    'seed': '随机种子'
+                    'prompt': '正向提示词', 'negative_prompt': '反向提示词', 'model': '文生图模型',
+                    'width': '图像宽度', 'height': '图像高度', 'num_steps': '迭代步数',
+                    'guidance': '引导系数', 'seed': '随机种子', 'num_outputs': '生成数量',
+                    'image_url': '输入图像URL', 'mask_url': '遮罩URL'
                 };
                 return nameMap[name] || name;
             }
-            
-            // 下载图像
+
+            // 下载按钮
             document.getElementById('downloadButton').addEventListener('click', async function() {
                 const img = document.getElementById('aiImage');
                 const gallery = document.getElementById('imageGallery');
                 let src = '';
-                if (!gallery.classList.contains('hidden') && currentImagesArray && currentImagesArray.length > 0) {
-                    src = currentImagesArray[0];
-                } else {
-                    src = img.src;
-                }
-                if (!src) {
-                    showStatus('没有可下载的图像', 'error');
-                    return;
-                }
-                
+                if (!gallery.classList.contains('hidden') && currentImagesArray && currentImagesArray.length > 0) src = currentImagesArray[0];
+                else src = img.src;
+                if (!src) return showStatus('没有可下载的图像', 'error');
+
                 try {
-                    // 从图像数据创建blob
                     const response = await fetch(src);
                     const blob = await response.blob();
-                    
-                    // 创建下载链接
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
-                    link.href = url;
-                    
-                    // 生成文件名
                     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
                     const model = document.getElementById('usedModel').textContent || 'ai-image';
-                    link.download = `${model}-${timestamp}.png`;
-                    
-                    // 触发下载
-                    document.body.appendChild(link);
-                    link.click();
-                    
-                    // 清理
-                    document.body.removeChild(link);
+                    link.href = url; link.download = `${model}-${timestamp}.png`;
+                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
                     window.URL.revokeObjectURL(url);
-                    
                     showStatus('图像下载成功', 'success');
                 } catch (error) {
-                    console.error('下载图像错误:', error);
+                    console.error('Download error:', error);
                     showStatus('下载图像失败', 'error');
                 }
             });
 
             // 下载 ZIP（多图）
             document.getElementById('downloadZipButton').addEventListener('click', async function() {
-                if (!currentImagesArray || currentImagesArray.length === 0) {
-                    showStatus('没有可打包的图片', 'error');
-                    return;
-                }
+                if (!currentImagesArray || currentImagesArray.length === 0) return showStatus('没有可打包的图片', 'error');
                 try {
                     const zip = new JSZip();
                     const model = document.getElementById('usedModel').textContent || 'ai-image';
@@ -922,25 +849,21 @@
                     const blob = await zip.generateAsync({ type: 'blob' });
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `${model}-${timestamp}.zip`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    link.href = url; link.download = `${model}-${timestamp}.zip`;
+                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
                     window.URL.revokeObjectURL(url);
                     showStatus('ZIP 下载已开始', 'success');
                 } catch (e) {
-                    console.error('ZIP打包失败:', e);
+                    console.error('ZIP pack failed:', e);
                     showStatus('打包ZIP失败', 'error');
                 }
             });
-            
+
             // 提交生成请求
             let progressTimer = null;
             let pendingController = null;
 
             document.getElementById('submitButton').addEventListener('click', async function() {
-                // 显示加载中状态
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 const initialPrompt = document.getElementById('initialPrompt');
                 const aiImage = document.getElementById('aiImage');
@@ -948,34 +871,35 @@
                 const progressBar = document.getElementById('progressBar');
                 const progressText = document.getElementById('progressText');
                 const progressExtra = document.getElementById('progressExtra');
-                
+
                 if (!loadingOverlay || !initialPrompt || !aiImage) {
-                    console.error('必要的DOM元素未找到');
+                    console.error('Missing DOM elements');
                     return;
                 }
-                
-                // 隐藏初始提示和图像
+
                 initialPrompt.classList.add('hidden');
                 aiImage.classList.add('hidden');
                 loadingOverlay.classList.remove('hidden');
-                
-                // 隐藏之前的提示和按钮，并清理上一次状态
+
                 const imageStatus = document.getElementById('imageStatus');
                 const copyParamsButton = document.getElementById('copyParamsButton');
                 const downloadButton = document.getElementById('downloadButton');
-                const downloadZipButton = document.getElementById('downloadZipButton');
-                
                 if (imageStatus) imageStatus.classList.add('hidden');
                 if (copyParamsButton) copyParamsButton.classList.add('hidden');
                 if (downloadButton) downloadButton.classList.add('hidden');
-                if (downloadZipButton) downloadZipButton.classList.add('hidden');
                 if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
-                if (pendingController) { try { pendingController.abort(); } catch(_){} pendingController = null; }
-                
-                // 获取参数（初始草案）
+                if (pendingController) { try { pendingController.abort(); } catch(_){ } pendingController = null; }
+
+                const promptText = (document.getElementById('prompt')?.value || '').trim();
+                if (!promptText) {
+                    showStatus('正向提示词不能为空', 'error');
+                    loadingOverlay.classList.add('hidden');
+                    initialPrompt.classList.remove('hidden');
+                    return;
+                }
+
                 const rawParams = {
-                    password: document.getElementById('password')?.value || '',
-                    prompt: document.getElementById('prompt')?.value || '',
+                    prompt: promptText,
                     negative_prompt: document.getElementById('negative_prompt')?.value || '',
                     model: document.getElementById('model')?.value,
                     width: parseInt(document.getElementById('width')?.value) || 1024,
@@ -987,10 +911,8 @@
                     mask_url: document.getElementById('mask_url')?.value || '',
                     num_outputs: parseInt(document.getElementById('num_outputs')?.value) || 1
                 };
-                // 基于模型特性，清洗出最终要发送/展示的参数
                 const selectedModelMeta = availableModels.find(m => m.id === rawParams.model);
                 const params = {
-                    password: rawParams.password,
                     prompt: rawParams.prompt,
                     negative_prompt: rawParams.negative_prompt,
                     model: rawParams.model,
@@ -1001,48 +923,35 @@
                     seed: rawParams.seed,
                     num_outputs: rawParams.num_outputs
                 };
-                if (selectedModelMeta?.requiresImage) {
-                    params.image_url = rawParams.image_url;
+                if (selectedModelMeta?.requiresImage) params.image_url = rawParams.image_url;
+                if (selectedModelMeta?.requiresMask) params.mask_url = rawParams.mask_url;
+
+                currentImageParams = { ...params };
+
+                if (selectedModelMeta && selectedModelMeta.requiresImage && !rawParams.image_url) {
+                    showStatus('该模型需要提供输入图像URL', 'error');
+                    loadingOverlay.classList.add('hidden');
+                    initialPrompt.classList.remove('hidden');
+                    return;
                 }
-                if (selectedModelMeta?.requiresMask) {
-                    params.mask_url = rawParams.mask_url;
-                }
-                
-                // 保存当前参数
-                currentImageParams = {...params};
-                
-                // 前端必填校验（依据模型元信息）
-                if (selectedModelMeta && selectedModelMeta.requiresImage) {
-                    if (!rawParams.image_url) {
-                        showStatus('该模型需要提供输入图像URL', 'error');
-                        loadingOverlay.classList.add('hidden');
-                        initialPrompt.classList.remove('hidden');
-                        return;
-                    }
-                }
-                if (selectedModelMeta && selectedModelMeta.requiresMask) {
-                    if (!rawParams.mask_url) {
-                        showStatus('局部重绘模型需要提供遮罩URL', 'error');
-                        loadingOverlay.classList.add('hidden');
-                        initialPrompt.classList.remove('hidden');
-                        return;
-                    }
+                if (selectedModelMeta && selectedModelMeta.requiresMask && !rawParams.mask_url) {
+                    showStatus('局部重绘模型需要提供遮罩URL', 'error');
+                    loadingOverlay.classList.add('hidden');
+                    initialPrompt.classList.remove('hidden');
+                    return;
                 }
 
                 try {
-                    // 发送请求
                     const startTime = performance.now();
-
-                    // 启动拟真进度条
                     let progress = 0;
                     if (progressBarContainer && progressBar && progressText) {
                         progressBarContainer.classList.remove('hidden');
-                        progress = 0;
-                        progressBar.style.width = '0%';
-                        progressText.textContent = '0%';
+                        progress = 0; progressBar.style.width = '0%'; progressText.textContent = '0%';
                         if (progressExtra) progressExtra.textContent = '估算';
                         const steps = params.num_steps || 20;
-                        const baseMs = Math.max(4000, Math.min(20000, steps * 600));
+                        const num = params.num_outputs || 1;
+                        const pixels = (params.width || 1024) * (params.height || 1024);
+                        const baseMs = Math.max(5000, Math.min(60000, steps * Math.sqrt(pixels) / 16 + (num - 1) * 1500));
                         const startTs = Date.now();
                         progressTimer = setInterval(() => {
                             const elapsed = Date.now() - startTs;
@@ -1056,21 +965,16 @@
                         }, 150);
                     }
 
-                    // 60秒超时控制
                     pendingController = new AbortController();
-                    const timeoutId = setTimeout(() => pendingController && pendingController.abort('timeout'), 60000);
-
+                    const timeoutId = setTimeout(() => pendingController && pendingController.abort('timeout'), 90000);
                     const response = await fetch('/', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'image/*'
-                        },
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'image/*' },
                         body: JSON.stringify(params),
                         signal: pendingController.signal
                     });
                     clearTimeout(timeoutId);
-                    
+
                     if (!response.ok) {
                         const contentType = response.headers.get('content-type');
                         if (contentType?.includes('application/json')) {
@@ -1080,15 +984,14 @@
                             throw new Error(`${msg}${details}`);
                         } else {
                             const errorText = await response.text();
-                            console.error('服务器错误:', errorText);
+                            console.error('Server error:', errorText);
                             throw new Error('生成失败');
                         }
                     }
-                    
+
                     const respType = response.headers.get('content-type') || '';
                     const serverSecondsHeader = response.headers.get('X-Server-Seconds');
                     let serverSeconds = serverSecondsHeader ? parseFloat(serverSecondsHeader) : null;
-
                     let base64Image = '';
                     let imageBlob = null;
                     let imagesArray = null;
@@ -1105,53 +1008,27 @@
                         imageBlob = await response.blob();
                         base64Image = await blobToBase64(imageBlob);
                     }
-                    
                     const endTime = performance.now();
                     const generationTime = ((endTime - startTime) / 1000).toFixed(2);
-                    
-                    // 设置图像信息并显示图像
+
                     const gallery = document.getElementById('imageGallery');
+                    const aiImageEl = document.getElementById('aiImage');
                     gallery.innerHTML = '';
                     if (imagesArray && imagesArray.length > 1) {
-                        aiImage.classList.add('hidden');
+                        aiImageEl.classList.add('hidden');
                         gallery.classList.remove('hidden');
                         currentImagesArray = imagesArray.slice();
                         imagesArray.forEach((src, idx) => {
                             const wrap = document.createElement('div');
                             wrap.className = 'relative group';
-
                             const img = document.createElement('img');
-                            img.src = src;
-                            img.alt = `生成的图像 ${idx+1}`;
-                            img.className = 'w-full h-auto rounded';
-                            img.style.cursor = 'zoom-in';
+                            img.src = src; img.alt = `生成的图像 ${idx+1}`; img.className = 'w-full h-auto rounded'; img.style.cursor = 'zoom-in';
                             img.addEventListener('click', () => openImageModal(src));
-
-                            // 悬浮操作条
                             const bar = document.createElement('div');
                             bar.className = 'absolute bottom-1 left-1 right-1 hidden group-hover:flex bg-black bg-opacity-50 text-white text-xs rounded px-1 py-0.5 gap-1 justify-center';
-
-                            const btnZoom = document.createElement('button');
-                            btnZoom.innerHTML = '<i class="fa-solid fa-magnifying-glass-plus"></i>';
-                            btnZoom.title = '放大';
-                            btnZoom.onclick = (e) => { e.stopPropagation(); openImageModal(src); };
-
-                            const btnCopy = document.createElement('button');
-                            btnCopy.innerHTML = '<i class="fa-solid fa-copy"></i>';
-                            btnCopy.title = '复制到剪贴板';
-                            btnCopy.onclick = async (e) => {
-                                e.stopPropagation();
-                                try {
-                                    await navigator.clipboard.writeText(src);
-                                    showStatus('图片已复制到剪贴板', 'success');
-                                } catch (_) {
-                                    showStatus('复制失败', 'error');
-                                }
-                            };
-
-                            const btnDl = document.createElement('button');
-                            btnDl.innerHTML = '<i class="fa-solid fa-download"></i>';
-                            btnDl.title = '下载此图';
+                            const btnZoom = document.createElement('button'); btnZoom.innerHTML = '<i class="fa-solid fa-magnifying-glass-plus"></i>'; btnZoom.title = '放大'; btnZoom.onclick = (e) => { e.stopPropagation(); openImageModal(src); };
+                            const btnCopy = document.createElement('button'); btnCopy.innerHTML = '<i class="fa-solid fa-copy"></i>'; btnCopy.title = '复制到剪贴板'; btnCopy.onclick = async (e) => { e.stopPropagation(); try { await navigator.clipboard.writeText(src); showStatus('图片已复制到剪贴板', 'success'); } catch (_) { showStatus('复制失败', 'error'); } };
+                            const btnDl = document.createElement('button'); btnDl.innerHTML = '<i class="fa-solid fa-download"></i>'; btnDl.title = '下载此图';
                             btnDl.onclick = async (e) => {
                                 e.stopPropagation();
                                 try {
@@ -1161,53 +1038,32 @@
                                     const link = document.createElement('a');
                                     const model = document.getElementById('usedModel').textContent || 'ai-image';
                                     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                                    link.href = url;
-                                    link.download = `${model}-${timestamp}-${idx+1}.png`;
+                                    link.href = url; link.download = `${model}-${timestamp}-${idx+1}.png`;
                                     document.body.appendChild(link); link.click(); document.body.removeChild(link);
                                     window.URL.revokeObjectURL(url);
-                                } catch (_) {
-                                    showStatus('下载失败', 'error');
-                                }
+                                } catch (_) { showStatus('下载失败', 'error'); }
                             };
-
-                            bar.appendChild(btnZoom);
-                            bar.appendChild(btnCopy);
-                            bar.appendChild(btnDl);
-
-                            wrap.appendChild(img);
-                            wrap.appendChild(bar);
+                            bar.appendChild(btnZoom); bar.appendChild(btnCopy); bar.appendChild(btnDl);
+                            wrap.appendChild(img); wrap.appendChild(bar);
                             gallery.appendChild(wrap);
                         });
                     } else {
                         gallery.classList.add('hidden');
                         currentImagesArray = null;
-                        aiImage.src = base64Image;
+                        aiImageEl.src = base64Image;
                     }
 
-                    // 统一的UI完成逻辑
                     const finalize = () => {
-                        // 图像加载完成后更新UI
                         loadingOverlay.classList.add('hidden');
-                        if (!imagesArray || imagesArray.length <= 1) {
-                            aiImage.classList.remove('hidden');
-                        }
-                        
-                        // 安全地更新信息显示
+                        if (!imagesArray || imagesArray.length <= 1) aiImageEl.classList.remove('hidden');
+
                         const elements = {
                             generationTime: document.getElementById('generationTime'),
                             usedModel: document.getElementById('usedModel'),
                             computeInfo: document.getElementById('computeInfo'),
                             imageSize: document.getElementById('imageSize')
                         };
-                        
-                        if (elements.generationTime) {
-                            elements.generationTime.textContent = `${generationTime}秒`;
-                        }
-                        if (elements.usedModel) {
-                            elements.usedModel.textContent = getModelNameById(params.model);
-                        }
-
-                        // 从响应头提取信息
+                        if (elements.generationTime) elements.generationTime.textContent = `${generationTime}秒`;
                         const usedModelHeader = response.headers.get('X-Used-Model');
                         const usedModelName = usedModelHeader ? getModelNameById(usedModelHeader) : getModelNameById(params.model);
                         if (elements.usedModel) elements.usedModel.textContent = usedModelName;
@@ -1218,30 +1074,22 @@
                                 const bytes = parseInt(bytesStr, 10);
                                 elements.imageSize.textContent = formatBytes(bytes);
                             } else if (imageBlob) {
-                                // 回退：用blob大小
                                 elements.imageSize.textContent = formatBytes(imageBlob.size);
                             } else if (imagesArray && imagesArray[0]) {
                                 elements.imageSize.textContent = formatBytes(dataURLBytes(imagesArray[0]));
                             }
                         }
 
-                        // 计算真实 it/s：迭代步数 / 实际耗时
                         const itPerSec = (() => {
                             const steps = Number(params.num_steps) || 0;
                             const seconds = serverSeconds && serverSeconds > 0 ? serverSeconds : (parseFloat(generationTime) || 0);
-                            if (steps > 0 && seconds > 0) {
-                                return (steps / seconds).toFixed(2);
-                            }
+                            if (steps > 0 && seconds > 0) return (steps / seconds).toFixed(2);
                             return '-';
                         })();
-                        if (elements.computeInfo) {
-                            elements.computeInfo.textContent = `${itPerSec}`;
-                        }
-                        
-                        // 更新所有参数面板（隐藏不相关字段）
+                        if (elements.computeInfo) elements.computeInfo.textContent = `${itPerSec}`;
+
                         updateParamsDisplay(params);
 
-                        // 填充每张图片的尺寸与大小
                         const metaPanel = document.getElementById('imageMeta');
                         const metaBody = document.getElementById('imageMetaBody');
                         if (imagesArray && imagesArray.length > 0 && metaPanel && metaBody) {
@@ -1251,7 +1099,7 @@
                                 probe.onload = () => {
                                     const tr = document.createElement('tr');
                                     const sizeBytes = dataURLBytes(src);
-                                    tr.innerHTML = `<td class=\"py-1 pr-3\">${i+1}</td><td class=\"py-1 pr-3\">${probe.width}×${probe.height}</td><td class=\"py-1\">${formatBytes(sizeBytes)}</td>`;
+                                    tr.innerHTML = `<td class="py-1 pr-3">${i+1}</td><td class="py-1 pr-3">${probe.width}×${probe.height}</td><td class="py-1">${formatBytes(sizeBytes)}</td>`;
                                     metaBody.appendChild(tr);
                                     resolve();
                                 };
@@ -1263,8 +1111,7 @@
                             const panel = document.getElementById('imageMeta');
                             if (panel) panel.classList.add('hidden');
                         }
-                        
-                        // 进度条收口到100%
+
                         if (progressBarContainer && progressBar && progressText) {
                             if (progressTimer) clearInterval(progressTimer);
                             progressBar.style.width = '100%';
@@ -1272,323 +1119,299 @@
                             setTimeout(() => progressBarContainer.classList.add('hidden'), 800);
                         }
 
-                        // 显示状态和操作按钮
                         showStatus(imagesArray ? `生成成功（${imagesArray.length} 张）` : '生成成功', 'success');
                         if (copyParamsButton) copyParamsButton.classList.remove('hidden');
                         if (downloadButton) downloadButton.classList.remove('hidden');
+                        const downloadZipButton = document.getElementById('downloadZipButton');
                         if (downloadZipButton) {
                             if (imagesArray && imagesArray.length > 1) downloadZipButton.classList.remove('hidden');
                             else downloadZipButton.classList.add('hidden');
                         }
-                        
-                        // 添加到历史记录
-                        addToHistory(params, base64Image);
+
+                        // 保存到历史记录
+                        const thumb = imagesArray && imagesArray.length > 0 ? imagesArray[0] : (base64Image || aiImageEl.src);
+                        if (thumb) saveHistory({ thumb, params });
                     };
 
-                    // 触发 finalize
-                    if (imagesArray && imagesArray.length > 1) {
-                        finalize();
-                    } else {
-                        aiImage.onload = finalize;
-                    }
-                    
+                    if (imagesArray && imagesArray.length > 1) finalize();
+                    else aiImageEl.onload = finalize;
+
                 } catch (error) {
-                    console.error('生成图像错误:', error);
-                    if (error && (error.name === 'AbortError' || error.message === 'timeout')) {
-                        showStatus('生成超时，请尝试更换模型或降低宽高后重试', 'error');
-                    } else {
-                        showStatus(error.message || '生成失败', 'error');
-                    }
-                    // 显示初始提示
+                    console.error('Generate error:', error);
+                    if (error && (error.name === 'AbortError' || error.message === 'timeout')) showStatus('生成超时，请尝试更换模型或降低宽高后重试', 'error');
+                    else showStatus(error.message || '生成失败', 'error');
                     initialPrompt.classList.remove('hidden');
                     aiImage.classList.add('hidden');
                 } finally {
                     loadingOverlay.classList.add('hidden');
                     if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+                    const progressBarContainer = document.getElementById('progressBarContainer');
                     if (progressBarContainer) progressBarContainer.classList.add('hidden');
                     pendingController = null;
                 }
             });
-            
-            // 将Blob转换为Base64
-            function blobToBase64(blob) {
+
+            // 本地上传到 R2
+            const imageFileInput = document.getElementById('image_file');
+            imageFileInput.addEventListener('change', async (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                try {
+                    showStatus('正在上传图片到 R2...', 'info');
+                    const url = await uploadFileToR2(file, 'image');
+                    if (url) {
+                        document.getElementById('image_url').value = url;
+                        showStatus('图片已上传并填充 URL', 'success');
+                    } else {
+                        throw new Error('上传返回空URL');
+                    }
+                } catch (err) {
+                    console.error('Upload image error:', err);
+                    showStatus('上传失败', 'error');
+                } finally {
+                    imageFileInput.value = '';
+                }
+            });
+
+            // 遮罩编辑器
+            const maskModal = document.getElementById('maskEditorModal');
+            const maskCanvas = document.getElementById('maskCanvas');
+            const maskBaseImg = document.getElementById('maskBaseImg');
+            const maskClear = document.getElementById('maskClear');
+            const maskApply = document.getElementById('maskApply');
+            const maskClose = document.getElementById('maskClose');
+            const brushSize = document.getElementById('brushSize');
+            const brushSizeVal = document.getElementById('brushSizeVal');
+            let drawing = false, ctx = null;
+
+            brushSize.oninput = () => { brushSizeVal.textContent = brushSize.value; };
+
+            document.getElementById('openMaskEditor').addEventListener('click', async () => {
+                const baseUrl = document.getElementById('image_url').value.trim();
+                let srcToLoad = baseUrl;
+                // 如果是 r2 链接，转换成 worker 可访问的
+                if (srcToLoad.startsWith('/r2/')) srcToLoad = window.location.origin + srcToLoad;
+                if (!srcToLoad) return showStatus('请先提供输入图像（URL或上传）', 'error');
+                try {
+                    const img = await loadImage(srcToLoad);
+                    openMaskModal(img);
+                } catch (e) {
+                    console.error('Load base image error:', e);
+                    showStatus('无法加载输入图像，请确保URL可访问', 'error');
+                }
+            });
+
+            function openMaskModal(img) {
+                maskModal.classList.remove('hidden');
+                maskBaseImg.src = img.src;
+                const maxW = 800, maxH = 600;
+                let w = img.naturalWidth, h = img.naturalHeight;
+                const ratio = Math.min(maxW / w, maxH / h, 1);
+                w = Math.floor(w * ratio); h = Math.floor(h * ratio);
+                maskCanvas.width = w; maskCanvas.height = h;
+                ctx = maskCanvas.getContext('2d');
+                ctx.clearRect(0, 0, w, h);
+            }
+
+            function loadImage(src) {
                 return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
+                    const image = new Image();
+                    if (!src.startsWith('data:')) image.crossOrigin = 'anonymous';
+                    image.onload = () => resolve(image);
+                    image.onerror = (e) => reject(new Error(`Failed to load image from: ${src}`));
+                    image.src = src;
                 });
             }
 
-            // 字节转可读字符串
-            function formatBytes(bytes) {
-                if (!bytes && bytes !== 0) return '-';
-                const sizes = ['B', 'KB', 'MB', 'GB'];
-                if (bytes === 0) return '0 B';
-                const i = Math.floor(Math.log(bytes) / Math.log(1024));
-                const value = (bytes / Math.pow(1024, i)).toFixed(2);
-                return `${value} ${sizes[i]}`;
+            function getCanvasPos(e) {
+                const rect = maskCanvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left);
+                const y = (e.clientY - rect.top);
+                return { x, y };
+            }
+            
+            function drawOnCanvas(e) {
+                if (!drawing || !ctx) return;
+                const { x, y } = getCanvasPos(e);
+                ctx.save();
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(x, y, parseInt(brushSize.value), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
             }
 
-            // 计算 dataURL 的字节大小（粗略）
-            function dataURLBytes(dataURL) {
+            maskCanvas.addEventListener('pointerdown', (e) => { drawing = true; drawOnCanvas(e); });
+            maskCanvas.addEventListener('pointermove', drawOnCanvas);
+            maskCanvas.addEventListener('pointerup', () => { drawing = false; });
+            maskCanvas.addEventListener('pointerleave', () => { drawing = false; });
+
+            maskClear.addEventListener('click', () => {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+            });
+
+            maskApply.addEventListener('click', async () => {
+                if (!ctx) return;
                 try {
-                    const base64 = dataURL.split(',')[1] || '';
-                    // base64 长度 * 3/4 约等于字节数
-                    return Math.floor((base64.length * 3) / 4);
-                } catch (_) {
-                    return 0;
+                    const blob = await new Promise(resolve => maskCanvas.toBlob(resolve, 'image/png'));
+                    const file = new File([blob], 'mask.png', { type: 'image/png' });
+                    showStatus('正在上传遮罩到 R2...', 'info');
+                    const url = await uploadFileToR2(file, 'mask');
+                    if (url) {
+                        document.getElementById('mask_url').value = url;
+                        showStatus('遮罩已上传并填充 URL', 'success');
+                        closeMaskModal();
+                    } else {
+                        throw new Error('上传返回空URL');
+                    }
+                } catch (e) {
+                    console.error('Mask export/upload error:', e);
+                    showStatus('遮罩上传失败', 'error');
                 }
+            });
+
+            function closeMaskModal() { maskModal.classList.add('hidden'); }
+            maskClose.addEventListener('click', closeMaskModal);
+            maskModal.addEventListener('click', (e) => { if (e.target === maskModal) closeMaskModal(); });
+            window.addEventListener('keydown', (e) => { if (!maskModal.classList.contains('hidden') && e.key === 'Escape') closeMaskModal(); });
+
+            // 上传到 R2
+            async function uploadFileToR2(file, kind) {
+                const fd = new FormData();
+                if (kind === 'mask') fd.append('mask', file, file.name || 'mask.png');
+                else fd.append('image', file, file.name || 'image.png');
+                const resp = await fetch('/api/upload', { method: 'POST', body: fd });
+                if (!resp.ok) {
+                    try { const err = await resp.json(); console.error('Upload failed:', err); } catch (_) {}
+                    return '';
+                }
+                const data = await resp.json();
+                if (kind === 'mask') return data.mask_url || '';
+                return data.image_url || '';
             }
 
-            // 简易图片放大预览
+            // 辅助函数
+            function blobToBase64(blob) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onloadend = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(blob); }); }
+            function formatBytes(bytes) { if (!bytes && bytes !== 0) return '-'; const sizes = ['B', 'KB', 'MB', 'GB']; if (bytes === 0) return '0 B'; const i = Math.floor(Math.log(bytes) / Math.log(1024)); const val = (bytes / Math.pow(1024, i)).toFixed(2); return `${val} ${sizes[i]}`; }
+            function dataURLBytes(dataURL) { try { const base64 = dataURL.split(',')[1] || ''; return Math.floor((base64.length * 3) / 4); } catch (_) { return 0; } }
+            function getModelNameById(id) { const model = availableModels.find(m => m.id === id); return model ? model.name : id; }
+
+            // 放大预览
             function openImageModal(src) {
                 const existing = document.getElementById('imgModal');
                 if (existing) existing.remove();
                 const modal = document.createElement('div');
                 modal.id = 'imgModal';
-                modal.style.position = 'fixed';
-                modal.style.inset = '0';
-                modal.style.background = 'rgba(0,0,0,0.7)';
-                modal.style.display = 'flex';
-                modal.style.alignItems = 'center';
-                modal.style.justifyContent = 'center';
-                modal.style.zIndex = '1000';
-                modal.innerHTML = `
-                  <div class="max-w-5xl max-h-[90vh] p-2">
-                    
-                    <div class="text-center mt-2">
-                      <button id="closeImgModal" class="btn btn-secondary">关闭</button>
-                    </div>
-                  </div>`;
+                modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;';
+                modal.innerHTML = `<div class="max-w-5xl max-h-[90vh] p-2"><img src="${src}" class="rounded shadow-lg max-h-[85vh] mx-auto" /><div class="text-center mt-2"><button id="closeImgModal" class="btn btn-secondary">关闭</button></div></div>`;
                 document.body.appendChild(modal);
                 document.getElementById('closeImgModal').onclick = () => modal.remove();
                 modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
             }
-            
-            // 通过ID获取模型名称
-            function getModelNameById(id) {
-                const model = availableModels.find(m => m.id === id);
-                return model ? model.name : id;
-            }
-            
-            // 更新参数显示
+
+            // 更新参数显示徽章
             function updateParamsDisplay(params) {
-                const allParamsContainer = document.getElementById('allParamsContainer');
-                const allParamsElement = document.getElementById('allParams');
-                
-                if (!allParamsContainer || !allParamsElement) return;
-                
-                // 清空现有参数
-                allParamsElement.innerHTML = '';
-                
-                // 添加新参数
+                const container = document.getElementById('allParamsContainer');
+                const el = document.getElementById('allParams');
+                if (!container || !el) return;
+                el.innerHTML = '';
                 for (const [key, value] of Object.entries(params)) {
-                    if (key === 'password') continue; // 不显示密码
-                    
-                    const paramName = formatParamName(key);
-                    const paramValue = value;
-                    
-                    // 创建参数徽章
+                    if (key === 'password') continue;
                     const badge = document.createElement('div');
                     badge.className = 'param-badge';
-                    badge.innerHTML = `<span class="font-medium">${paramName}:</span> ${paramValue}`;
-                    
-                    allParamsElement.appendChild(badge);
+                    badge.innerHTML = `<span class="font-medium">${formatParamName(key)}:</span> ${value}`;
+                    el.appendChild(badge);
                 }
-                
-                // 显示参数容器
-                allParamsContainer.classList.remove('hidden');
+                container.classList.remove('hidden');
             }
-            
-            // 更新参数预览
-            function updateParamPreview() {
-                document.getElementById('previewWidth').textContent = document.getElementById('width').value;
-                document.getElementById('previewHeight').textContent = document.getElementById('height').value;
-                document.getElementById('previewSteps').textContent = document.getElementById('num_steps').value;
-                document.getElementById('previewGuidance').textContent = document.getElementById('guidance').value;
-                
-                const seedValue = document.getElementById('seed').value;
-                document.getElementById('previewSeed').textContent = seedValue || '随机';
-            }
-            
-            // 更新模型配置
-            async function updateModelConfig(modelId) {
-                try {
-                    const response = await fetch(`/api/model-config?id=${modelId}`);
-                    if (!response.ok) return;
-                    
-                    const config = await response.json();
-                    
-                    // 更新步数滑块
-                    if (config.recommended_steps) {
-                        const stepsSlider = document.getElementById('num_steps');
-                        stepsSlider.max = config.recommended_steps;
-                        stepsSlider.value = Math.min(parseInt(stepsSlider.value), config.recommended_steps);
-                        document.getElementById('num_stepsValue').textContent = stepsSlider.value;
-                    }
-                    
-                    // 更新生成数量选项
-                    if (config.max_outputs) {
-                        const numOutputs = document.getElementById('num_outputs');
-                        Array.from(numOutputs.options).forEach(opt => {
-                            opt.disabled = parseInt(opt.value) > config.max_outputs;
-                        });
-                    }
-                    
-                    updateParamPreview();
-                } catch (error) {
-                    console.error('获取模型配置失败:', error);
-                }
-            }
-            
-            // 添加提示词建议
-            window.addPromptSuggestion = function(text) {
-                const prompt = document.getElementById('prompt');
-                prompt.value += (prompt.value ? ', ' : '') + text;
-            };
-            
-            // 显示状态提示
+
+            // 状态提示
             function showStatus(message, type = 'info') {
                 const statusElement = document.getElementById('imageStatus');
                 if (!statusElement) return;
-                
-                // 设置样式
                 statusElement.className = '';
-                switch (type) {
-                    case 'success':
-                        statusElement.classList.add('bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-100');
-                        break;
-                    case 'error':
-                        statusElement.classList.add('bg-red-100', 'text-red-800', 'dark:bg-red-900', 'dark:text-red-100');
-                        break;
-                    case 'warning':
-                        statusElement.classList.add('bg-yellow-100', 'text-yellow-800', 'dark:bg-yellow-900', 'dark:text-yellow-100');
-                        break;
-                    default:
-                        statusElement.classList.add('bg-blue-100', 'text-blue-800', 'dark:bg-blue-900', 'dark:text-blue-100');
-                }
-                
-                // 设置消息
-                statusElement.textContent = message;
-                
-                // 显示
-                statusElement.classList.remove('hidden');
-                
-                // 5秒后自动隐藏
-                setTimeout(() => {
-                    statusElement.classList.add('hidden');
-                }, 5000);
-            }
-            
-            // 历史记录功能
-            const MAX_HISTORY = 10;
-            let generationHistory = JSON.parse(localStorage.getItem('generationHistory')) || [];
-            
-            function addToHistory(params, imageData) {
-                const historyItem = {
-                    id: Date.now(),
-                    timestamp: new Date().toISOString(),
-                    params: {...params, password: undefined},
-                    thumbnail: imageData
+                const styles = {
+                    success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
+                    error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
+                    warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100',
+                    info: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100'
                 };
-                
-                generationHistory.unshift(historyItem);
-                if (generationHistory.length > MAX_HISTORY) generationHistory.pop();
-                
-                localStorage.setItem('generationHistory', JSON.stringify(generationHistory));
-                renderHistory();
+                statusElement.classList.add(...(styles[type] || styles.info).split(' '));
+                statusElement.textContent = message;
+                statusElement.classList.remove('hidden');
+                setTimeout(() => { statusElement.classList.add('hidden'); }, 5000);
             }
-            
+
+            // 历史记录
+            const HISTORY_KEY = 'gen_history_v2';
+            const historyGrid = document.getElementById('historyGrid');
+            const historyEmpty = document.getElementById('historyEmpty');
+            const historyCount = document.getElementById('historyCount');
+            function loadHistory() { try { const raw = localStorage.getItem(HISTORY_KEY); const list = raw ? JSON.parse(raw) : []; return Array.isArray(list) ? list : []; } catch (_) { return []; } }
+            function saveHistoryItemList(list) { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 10))); }
             function renderHistory() {
-                const container = document.getElementById('historyContainer');
-                container.innerHTML = '';
-                
-                if (generationHistory.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-sm">暂无历史记录</p>';
-                    return;
-                }
-                
-                generationHistory.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'history-item cursor-pointer';
-                    card.innerHTML = `
-                        
-                        <div class="history-overlay">
-                            <button class="btn btn-sm btn-primary history-reuse-btn" data-id="${item.id}">复用参数</button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-                
-                // 添加复用功能
-                document.querySelectorAll('.history-reuse-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = e.target.dataset.id;
-                        const item = generationHistory.find(i => i.id == id);
-                        if (item) {
-                            loadParams(item.params);
-                        }
+                const list = loadHistory();
+                historyGrid.innerHTML = '';
+                if (list.length === 0) { historyEmpty.classList.remove('hidden'); }
+                else {
+                    historyEmpty.classList.add('hidden');
+                    list.forEach((item, idx) => {
+                        const cell = document.createElement('div');
+                        cell.className = 'relative group cursor-pointer';
+                        cell.title = `${item.params && item.params.prompt ? item.params.prompt.slice(0, 60) + '...' : ''}`;
+                        cell.innerHTML = `
+                            <img src="${item.thumb}" class="w-full h-20 object-cover rounded" alt="历史缩略图${idx+1}" />
+                            <div class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded">
+                                <i class="fa-solid fa-repeat text-white text-lg"></i>
+                            </div>`;
+                        cell.addEventListener('click', () => { restoreParams(item.params || {}); showStatus('参数已从历史记录恢复', 'success'); });
+                        historyGrid.appendChild(cell);
                     });
-                });
+                }
+                historyCount.textContent = `${list.length} 条`;
             }
-            
-            function loadParams(params) {
-                Object.keys(params).forEach(key => {
-                    const element = document.getElementById(key);
-                    if (element) element.value = params[key];
-                });
-                showStatus('参数已加载', 'success');
-                updateParamPreview();
+            function saveHistory(record) { const list = loadHistory(); list.unshift({ time: Date.now(), ...record }); saveHistoryItemList(list); renderHistory(); }
+            function restoreParams(params) {
+                const setVal = (id, val) => { const el = document.getElementById(id); if (el) { el.value = val; if (el.type === 'range') el.dispatchEvent(new Event('input')); } };
+                if (typeof params.prompt === 'string') setVal('prompt', params.prompt);
+                if (typeof params.negative_prompt === 'string') setVal('negative_prompt', params.negative_prompt);
+                if (typeof params.model === 'string') { setVal('model', params.model); syncImg2ImgFields(); }
+                if (typeof params.width === 'number') setVal('width', params.width);
+                if (typeof params.height === 'number') setVal('height', params.height);
+                if (typeof params.num_steps === 'number') setVal('num_steps', params.num_steps);
+                if (typeof params.guidance === 'number') setVal('guidance', params.guidance);
+                if (typeof params.seed === 'number') setVal('seed', params.seed);
+                if (typeof params.num_outputs === 'number') setVal('num_outputs', params.num_outputs);
+                if (typeof params.image_url === 'string') setVal('image_url', params.image_url);
+                if (typeof params.mask_url === 'string') setVal('mask_url', params.mask_url);
             }
-            
-            // 初始化时渲染历史记录
+            document.getElementById('clearHistory').addEventListener('click', () => { localStorage.removeItem(HISTORY_KEY); renderHistory(); showStatus('历史记录已清空', 'success'); });
             renderHistory();
         });
 
-        // 登录遮罩及逻辑
+        // 登录遮罩
         function showLogin() {
             if (document.getElementById('loginOverlay')) return;
             const overlay = document.createElement('div');
             overlay.id = 'loginOverlay';
-            overlay.style.position = 'fixed';
-            overlay.style.inset = '0';
-            overlay.style.backdropFilter = 'blur(3px)';
-            overlay.style.background = 'rgba(0,0,0,0.4)';
-            overlay.style.zIndex = '1000';
-            overlay.innerHTML = `
-                <div class="w-full h-full flex items-center justify-center">
-                  <div class="card p-6 w-96 bg-white dark:bg-gray-800">
-                    <h3 class="text-lg font-semibold mb-4">请输入访问密码</h3>
-                    <input type="password" id="loginPassword" class="w-full" placeholder="访问密码" />
-                    <button id="loginButton" class="btn btn-primary w-full mt-4">登录</button>
-                    <p id="loginError" class="text-red-500 text-sm mt-2 hidden">密码错误</p>
-                  </div>
-                </div>`;
+            overlay.style.cssText = 'position:fixed;inset:0;backdrop-filter:blur(3px);background:rgba(0,0,0,0.4);z-index:1000;';
+            overlay.innerHTML = `<div class="w-full h-full flex items-center justify-center"><div class="card p-6 w-96 bg-white dark:bg-gray-800"><h3 class="text-lg font-semibold mb-4">请输入访问密码</h3><input type="password" id="loginPassword" class="w-full" placeholder="访问密码" /><button id="loginButton" class="btn btn-primary w-full mt-4">登录</button><p id="loginError" class="text-red-500 text-sm mt-2 hidden">密码错误</p></div></div>`;
             document.body.appendChild(overlay);
             document.getElementById('loginPassword').focus();
             const submitLogin = async () => {
                 const pwd = (document.getElementById('loginPassword').value || '').trim();
                 try {
-                    const resp = await fetch('/api/auth', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ password: pwd })
-                    });
-                    if (!resp.ok) {
-                        document.getElementById('loginError').classList.remove('hidden');
-                        return;
-                    }
+                    const resp = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pwd }) });
+                    if (!resp.ok) { document.getElementById('loginError').classList.remove('hidden'); return; }
                     overlay.remove();
-                } catch (_) {
-                    document.getElementById('loginError').classList.remove('hidden');
-                }
+                } catch (_) { document.getElementById('loginError').classList.remove('hidden'); }
             };
             document.getElementById('loginButton').addEventListener('click', submitLogin);
-            document.getElementById('loginPassword').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') submitLogin();
-            });
+            document.getElementById('loginPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') submitLogin(); });
         }
     </script>
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0b6ba2410bcd469da5b750e02c8e512a","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
