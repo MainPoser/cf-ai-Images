@@ -1,252 +1,530 @@
 /**
  * @author: kared
- * @create_date: 2025-05-10 21:15:59
- * @last_editors: kared
- * @last_edit_time: 2025-05-11 01:25:36
- * @description: This Cloudflare Worker script handles image generation.
+ * @last_edit_time: 2025-05-15
+ * @description: 增强版AI文生图服务Worker
  */
 
-// import html template
-import HTML from './index.html';
-
-// Available models list
+// 可用模型列表
 const AVAILABLE_MODELS = [
   {
     id: 'stable-diffusion-xl-base-1.0',
     name: 'Stable Diffusion XL Base 1.0',
-    description: 'Stability AI SDXL 文生图模型',
-    key: '@cf/stabilityai/stable-diffusion-xl-base-1.0'
+    description: 'Stability AI SDXL文生图模型',
+    key: '@cf/stabilityai/stable-diffusion-xl-base-1.0',
+    requiresImage: false,
+    recommended_steps: 20,
+    max_outputs: 5
   },
   {
     id: 'flux-1-schnell',
     name: 'FLUX.1 [schnell]',
-    description: '精确细节表现的高性能文生图模型',
-    key: '@cf/black-forest-labs/flux-1-schnell'
+    description: '高性能文生图模型',
+    key: '@cf/black-forest-labs/flux-1-schnell',
+    requiresImage: false,
+    recommended_steps: 6,
+    max_outputs: 4
   },
   {
     id: 'dreamshaper-8-lcm',
     name: 'DreamShaper 8 LCM',
-    description: '增强图像真实感的 SD 微调模型',
-    key: '@cf/lykon/dreamshaper-8-lcm'
+    description: '增强图像真实感的SD微调模型',
+    key: '@cf/lykon/dreamshaper-8-lcm',
+    requiresImage: false,
+    recommended_steps: 8,
+    max_outputs: 6
   },
   {
     id: 'stable-diffusion-xl-lightning',
     name: 'Stable Diffusion XL Lightning',
-    description: '更加高效的文生图模型',
-    key: '@cf/bytedance/stable-diffusion-xl-lightning'
+    description: '高效文生图模型',
+    key: '@cf/bytedance/stable-diffusion-xl-lightning',
+    requiresImage: false,
+    recommended_steps: 10,
+    max_outputs: 8
+  },
+  {
+    id: 'stable-diffusion-v1-5-img2img',
+    name: 'Stable Diffusion v1.5 图生图',
+    description: '将输入图像风格化或变换',
+    key: '@cf/runwayml/stable-diffusion-v1-5-img2img',
+    requiresImage: true,
+    recommended_steps: 20,
+    max_outputs: 3
+  },
+  {
+    id: 'stable-diffusion-v1-5-inpainting',
+    name: 'Stable Diffusion v1.5 局部重绘',
+    description: '根据遮罩对局部区域重绘',
+    key: '@cf/runwayml/stable-diffusion-v1-5-inpainting',
+    requiresImage: true,
+    requiresMask: true,
+    recommended_steps: 25,
+    max_outputs: 2
   }
 ];
 
-// Random prompts list
+// 随机提示词库
 const RANDOM_PROMPTS = [
   'cyberpunk cat samurai graphic art, blood splattered, beautiful colors',
-  '1girl, solo, outdoors, camping, night, mountains, nature, stars, moon, tent, twin ponytails, green eyes, cheerful, happy, backpack, sleeping bag, camping stove, water bottle, mountain boots, gloves, sweater, hat, flashlight,forest, rocks, river, wood, smoke, shadows, contrast, clear sky, constellations, Milky Way',
-  'masterpiece, best quality, amazing quality, very aesthetic, high resolution, ultra-detailed, absurdres, newest, scenery, anime, anime coloring, (dappled sunlight:1.2), rim light, backlit, dramatic shadow, 1girl, long blonde hair, blue eyes, shiny eyes, parted lips, medium breasts, puffy sleeve white dress, forest, flowers, white butterfly, looking at viewer',
-  'frost_glass, masterpiece, best quality, absurdres, cute girl wearing red Christmas dress, holding small reindeer, hug, braided ponytail, sidelocks, hairclip, hair ornaments, green eyes, (snowy forest, moonlight, Christmas trees), (sparkles, sparkling clothes), frosted, snow, aurora, moon, night, sharp focus, highly detailed, abstract, flowing',
-  '1girl, hatsune miku, white pupils, power elements, microphone, vibrant blue color palette, abstract,abstract background, dreamlike atmosphere, delicate linework, wind-swept hair, energy, masterpiece, best quality, amazing quality',
-  'cyberpunk cat(neon lights:1.3) clutter,ultra detailed, ctrash, chaotic, low light, contrast, dark, rain ,at night ,cinematic , dystopic, broken ground, tunnels, skyscrapers',
-  'Cyberpunk catgirl with purple hair, wearing leather and latex outfit with pink and purple cheetah print, holding a hand gun, black latex brassiere, glowing blue eyes with purple tech sunglasses, tail, large breasts, glowing techwear clothes, handguns, black leather jacket, tight shiny leather pants, cyberpunk alley background, Cyb3rWar3, Cyberware',
-  'a wide aerial view of a floating elven city in the sky, with two elven figures walking side by side across a glowing skybridge, the bridge arching between tall crystal towers, surrounded by clouds and golden light, majestic and serene atmosphere, vivid style, magical fantasy architecture',
-  'masterpiece, newest, absurdres,incredibly absurdres, best quality, amazing quality, very aesthetic, 1girl, very long hair, blonde, multi-tied hair, center-flap bangs, sunset, cumulonimbus cloud, old tree,sitting in tree, dark blue track suit, adidas, simple bird',
-  'beautiful girl, breasts, curvy, looking down scope, looking away from viewer, laying on the ground, laying ontop of jacket, aiming a sniper rifle, dark braided hair, backwards hat, armor, sleeveless, arm sleeve tattoos, muscle tone, dogtags, sweaty, foreshortening, depth of field, at night, night, alpine, lightly snowing, dusting of snow, Closeup, detailed face, freckles',
+  '1girl, solo, outdoors, camping, night, mountains, nature, stars, moon, tent',
+  'masterpiece, best quality, high resolution, ultra-detailed',
+  'frost_glass, cute girl wearing red Christmas dress, holding small reindeer',
+  '1girl, hatsune miku, white pupils, power elements, microphone',
 ];
 
-// Passwords for authentication
-// demo: const PASSWORDS = ['P@ssw0rd']
-const PASSWORDS = []
+// 访问密码
+const PASSWORDS = ['admin123'];
 
+// 图片上传配置
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export default {
   async fetch(request, env) {
-    const originalHost = request.headers.get("host");
+    const url = new URL(request.url);
+    const path = url.pathname;
 
-    // CORS Headers
+    // CORS 头部
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     };
 
+    // 处理预检请求
     if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: corsHeaders
-      });
+      return new Response(null, { headers: corsHeaders });
     }
 
     try {
-      const url = new URL(request.url);
-      const path = url.pathname;
-
-      // process api requests
-      if (path === '/api/models') {
-        // get available models list
-        return new Response(JSON.stringify(AVAILABLE_MODELS), {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        });
-      } else if (path === '/api/prompts') {
-        // get random prompts list
-        return new Response(JSON.stringify(RANDOM_PROMPTS), {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        });
-      } else if (request.method === 'POST') {
-        // process POST request for image generation
-        const data = await request.json();
+      // 处理API请求
+      switch (true) {
+        case path === '/api/models':
+          return handleModelsRequest(corsHeaders);
         
-        // Check if password is required and valid
-        if (PASSWORDS.length > 0 && (!data.password || !PASSWORDS.includes(data.password))) {
-          return new Response(JSON.stringify({ error: 'Please enter the correct password' }), { 
-            status: 403, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          });
-        }
+        case path === '/api/prompts':
+          return handlePromptsRequest(corsHeaders);
         
-        if ('prompt' in data && 'model' in data) {
-          const selectedModel = AVAILABLE_MODELS.find(m => m.id === data.model);
-          if (!selectedModel) {
-            return new Response(JSON.stringify({ error: 'Model is invalid' }), { 
-              status: 400,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            });
-          }
-          
-          const model = selectedModel.key;
-          let inputs = {};
-          
-          // Input parameter processing
-          if (data.model === 'flux-1-schnell') {
-            let steps = data.num_steps || 6;
-            if (steps >= 8) steps = 8;
-            else if (steps <= 4) steps = 4;
-            
-            // Only prompt and steps
-            inputs = {
-              prompt: data.prompt || 'cyberpunk cat',
-              steps: steps
-            };
-          } else {
-            // Default input parameters
-            inputs = {
-              prompt: data.prompt || 'cyberpunk cat',
-              negative_prompt: data.negative_prompt || '',
-              height: data.height || 1024,
-              width: data.width || 1024,
-              num_steps: data.num_steps || 20,
-              strength: data.strength || 0.1,
-              guidance: data.guidance || 7.5,
-              seed: data.seed || parseInt((Math.random() * 1024 * 1024).toString(), 10),
-            };
-          }
-
-          console.log(`Generating image with ${model} and prompt: ${inputs.prompt.substring(0, 50)}...`);
-          
-          try {
-            const response = await env.AI.run(model, inputs);
-  
-            // Processing the response of the flux-1-schnell model
-            if (data.model === 'flux-1-schnell') {
-              let jsonResponse;
-  
-              if (typeof response === 'object') {
-                jsonResponse = response;
-              } else {
-                try {
-                  jsonResponse = JSON.parse(response);
-                } catch (e) {
-                  console.error('Failed to parse JSON response:', e);
-                  return new Response(JSON.stringify({ 
-                    error: 'Failed to parse response',
-                    details: e.message
-                  }), { 
-                    status: 500,
-                    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-                  });
-                }
-              }
-  
-              if (!jsonResponse.image) {
-                return new Response(JSON.stringify({ 
-                  error: 'Invalid response format',
-                  details: 'Image data not found in response'
-                }), { 
-                  status: 500,
-                  headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-                });
-              }
-  
-              try {
-                // Convert from base64 to binary data
-                const binaryString = atob(jsonResponse.image);
-                const bytes = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                  bytes[i] = binaryString.charCodeAt(i);
-                }
-  
-                // Returns binary data in PNG format
-                return new Response(bytes, {
-                  headers: {
-                    ...corsHeaders, 
-                    'content-type': 'image/png',
-                  },
-                });
-              } catch (e) {
-                console.error('Failed to convert base64 to binary:', e);
-                return new Response(JSON.stringify({ 
-                  error: 'Failed to process image data',
-                  details: e.message
-                }), { 
-                  status: 500,
-                  headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-                });
-              }
-            } else {
-                // Return the response directly
-                return new Response(response, {
-                  headers: {
-                    ...corsHeaders, 
-                    'content-type': 'image/png',
-                  },
-                });
-              }
-            } catch (aiError) {
-            console.error('AI generation error:', aiError);
-            return new Response(JSON.stringify({ 
-              error: 'Image generation failed',
-              details: aiError.message
-            }), { 
-              status: 500,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            });
-          }
-        } else {
-          return new Response(JSON.stringify({ error: 'Missing required parameter: prompt or model' }), { 
-            status: 400, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          });
-        }
-      } else if (path.endsWith('.html') || path === '/') {
-        // redirect to index.html for HTML requests
-        return new Response(HTML.replace(/{{host}}/g, originalHost), {
-          status: 200,
-          headers: {
-            ...corsHeaders,
-            "content-type": "text/html"
-          }
-        });
-      } else {
-        return new Response('Not Found', { status: 404 });
+        case path === '/api/config':
+          return handleConfigRequest(corsHeaders);
+        
+        case path === '/api/auth' && request.method === 'POST':
+          return handleAuthRequest(request, corsHeaders);
+        
+        case path === '/api/upload' && request.method === 'POST':
+          return handleUploadRequest(request, env, corsHeaders);
+        
+        case path.startsWith('/images/'):
+          return handleImageRequest(path, env);
+        
+        case path === '/api/model-config':
+          return handleModelConfigRequest(url, corsHeaders);
+        
+        case request.method === 'POST' && path === '/':
+          return handleImageGeneration(request, env, corsHeaders);
+        
+        default:
+          return new Response('Not Found', { status: 404 });
       }
     } catch (error) {
-      console.error('Worker error:', error);
-      return new Response(JSON.stringify({ error: 'Internal server error', details: error.message }), { 
+      console.error(`Worker error: ${error.message}`);
+      return new Response(JSON.stringify({ 
+        error: 'Internal server error', 
+        details: error.message 
+      }), { 
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
       });
     }
-  },
+  }
 };
+
+// 处理模型列表请求
+function handleModelsRequest(corsHeaders) {
+  return new Response(JSON.stringify(AVAILABLE_MODELS), {
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'application/json'
+    }
+  });
+}
+
+// 处理提示词请求
+function handlePromptsRequest(corsHeaders) {
+  return new Response(JSON.stringify(RANDOM_PROMPTS), {
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'application/json'
+    }
+  });
+}
+
+// 处理配置请求
+function handleConfigRequest(corsHeaders) {
+  return new Response(JSON.stringify({ 
+    require_password: PASSWORDS.length > 0 
+  }), {
+    headers: { 
+      ...corsHeaders, 
+      'Content-Type': 'application/json' 
+    }
+  });
+}
+
+// 处理认证请求
+async function handleAuthRequest(request, corsHeaders) {
+  try {
+    const data = await request.json();
+    const validPassword = PASSWORDS.length === 0 || 
+      (data.password && PASSWORDS.includes(data.password));
+    
+    if (!validPassword) {
+      return new Response(JSON.stringify({ error: '密码错误' }), {
+        status: 403,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    // 设置认证cookie (7天有效期)
+    const cookie = `auth=1; Path=/; Max-Age=${7 * 24 * 3600}; HttpOnly; SameSite=Lax; Secure`;
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json', 
+        'Set-Cookie': cookie 
+      }
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: '无效请求' }), {
+      status: 400,
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      }
+    });
+  }
+}
+
+// 处理图片上传请求
+async function handleUploadRequest(request, env, corsHeaders) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get('image');
+    
+    if (!file || typeof file !== 'object') {
+      return new Response(JSON.stringify({ error: '无效的图片文件' }), {
+        status: 400,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    // 验证文件类型
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      return new Response(JSON.stringify({ 
+        error: '不支持的文件类型',
+        allowed_types: ALLOWED_IMAGE_TYPES
+      }), {
+        status: 400,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    // 验证文件大小
+    if (file.size > MAX_IMAGE_SIZE) {
+      return new Response(JSON.stringify({ 
+        error: '文件过大',
+        max_size: `${MAX_IMAGE_SIZE / 1024 / 1024}MB`
+      }), {
+        status: 400,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    // 生成唯一文件名
+    const fileExt = file.type.split('/')[1] || 'bin';
+    const filename = `upload-${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+    
+    // 保存到R2存储
+    await env.IMAGE_BUCKET.put(filename, file.stream());
+    
+    // 返回图片URL
+    return new Response(JSON.stringify({ 
+      url: `${url.origin}/images/${filename}` 
+    }), {
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      }
+    });
+    
+  } catch (error) {
+    return new Response(JSON.stringify({ 
+      error: '上传处理失败',
+      details: error.message
+    }), {
+      status: 500,
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      }
+    });
+  }
+}
+
+// 处理图片获取请求
+async function handleImageRequest(path, env) {
+  const filename = path.split('/').pop();
+  if (!filename) return new Response('Invalid filename', { status: 400 });
+  
+  try {
+    const object = await env.IMAGE_BUCKET.get(filename);
+    if (!object) return new Response('Not Found', { status: 404 });
+    
+    const headers = new Headers();
+    object.writeHttpMetadata(headers);
+    headers.set('etag', object.httpEtag);
+    headers.set('Cache-Control', 'public, max-age=31536000');
+    
+    return new Response(object.body, { headers });
+  } catch (error) {
+    return new Response('Error retrieving image', { status: 500 });
+  }
+}
+
+// 处理模型配置请求
+function handleModelConfigRequest(url, corsHeaders) {
+  const modelId = url.searchParams.get('id');
+  const model = AVAILABLE_MODELS.find(m => m.id === modelId);
+  
+  if (!model) {
+    return new Response(JSON.stringify({ error: '模型未找到' }), {
+      status: 404,
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      }
+    });
+  }
+  
+  // 返回模型配置
+  const config = {
+    recommended_steps: model.recommended_steps,
+    max_outputs: model.max_outputs,
+    requires_image: model.requiresImage,
+    requires_mask: model.requiresMask
+  };
+  
+  return new Response(JSON.stringify(config), {
+    headers: { 
+      ...corsHeaders, 
+      'Content-Type': 'application/json' 
+    }
+  });
+}
+
+// 处理图片生成请求
+async function handleImageGeneration(request, env, corsHeaders) {
+  try {
+    const data = await request.json();
+    
+    // 检查认证状态
+    const cookieHeader = request.headers.get('cookie') || '';
+    const authedByCookie = /(?:^|;\s*)auth=1(?:;|$)/.test(cookieHeader);
+    const authedByBody = data.password && PASSWORDS.includes(data.password);
+    
+    if (PASSWORDS.length > 0 && !(authedByCookie || authedByBody)) {
+      return new Response(JSON.stringify({ error: '需要正确的访问密码' }), {
+        status: 403,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    // 验证必需参数
+    if (!data.prompt || !data.model) {
+      return new Response(JSON.stringify({ 
+        error: '缺少必要参数: prompt 或 model' 
+      }), {
+        status: 400,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    const selectedModel = AVAILABLE_MODELS.find(m => m.id === data.model);
+    if (!selectedModel) {
+      return new Response(JSON.stringify({ error: '模型无效' }), { 
+        status: 400,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    // 准备模型输入
+    const inputs = prepareModelInputs(data, selectedModel);
+    
+    // 设置超时（120秒）
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
+    
+    // 执行AI模型
+    const startTime = Date.now();
+    const response = await env.AI.run(
+      selectedModel.key, 
+      inputs, 
+      { signal: controller.signal }
+    );
+    clearTimeout(timeoutId);
+    
+    const processingTime = ((Date.now() - startTime) / 1000).toFixed(3);
+    
+    // 处理模型响应
+    return handleModelResponse(response, selectedModel, processingTime, corsHeaders);
+    
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return new Response(JSON.stringify({ 
+        error: '生成超时',
+        suggestion: '请尝试降低分辨率或使用更快的模型'
+      }), { 
+        status: 504,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        }
+      });
+    }
+    
+    return new Response(JSON.stringify({ 
+      error: '生成失败',
+      details: error.message
+    }), { 
+      status: 500,
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      }
+    });
+  }
+}
+
+// 准备模型输入
+function prepareModelInputs(data, model) {
+  const inputs = {
+    prompt: data.prompt || 'cyberpunk cat',
+    negative_prompt: data.negative_prompt || '',
+    height: clampDimension(data.height || 1024),
+    width: clampDimension(data.width || 1024),
+    num_steps: clampSteps(data.num_steps || model.recommended_steps, model),
+    guidance: clampGuidance(data.guidance || 7.5),
+    seed: data.seed || Math.floor(Math.random() * 4294967295),
+    num_outputs: clampOutputs(data.num_outputs || 1, model)
+  };
+  
+  // 处理图生图模型的额外参数
+  if (model.requiresImage) {
+    if (!data.image_url) {
+      throw new Error('该模型需要提供image_url参数');
+    }
+    inputs.image_url = data.image_url;
+  }
+  
+  if (model.requiresMask && !data.mask_url) {
+    throw new Error('该模型需要提供mask_url参数');
+  }
+  
+  return inputs;
+}
+
+// 处理模型响应
+function handleModelResponse(response, model, processingTime, corsHeaders) {
+  // 处理flux模型的特殊响应格式
+  if (model.id === 'flux-1-schnell') {
+    return handleFluxModelResponse(response, model, processingTime, corsHeaders);
+  }
+  
+  // 默认处理二进制图像响应
+  return new Response(response, {
+    headers: {
+      ...corsHeaders,
+      'content-type': 'image/png',
+      'X-Used-Model': model.id,
+      'X-Processing-Seconds': processingTime
+    }
+  });
+}
+
+// 处理Flux模型的响应
+function handleFluxModelResponse(response, model, processingTime, corsHeaders) {
+  try {
+    // 尝试解析JSON响应
+    const jsonResponse = typeof response === 'object' ? response : JSON.parse(response);
+    
+    if (!jsonResponse.image) {
+      throw new Error('无效的响应格式: 缺少image字段');
+    }
+    
+    // 转换Base64为二进制
+    const binaryString = atob(jsonResponse.image);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    
+    return new Response(bytes, {
+      headers: {
+        ...corsHeaders,
+        'content-type': 'image/png',
+        'X-Used-Model': model.id,
+        'X-Processing-Seconds': processingTime
+      }
+    });
+    
+  } catch (error) {
+    throw new Error(`处理Flux模型响应失败: ${error.message}`);
+  }
+}
+
+// 辅助函数：限制尺寸在合理范围内
+function clampDimension(value) {
+  const v = parseInt(value);
+  return Math.min(2048, Math.max(256, Math.round(v / 64) * 64));
+}
+
+// 辅助函数：限制迭代步数
+function clampSteps(value, model) {
+  const steps = parseInt(value);
+  return Math.min(model.recommended_steps + 10, Math.max(1, steps));
+}
+
+// 辅助函数：限制引导系数
+function clampGuidance(value) {
+  return Math.min(30, Math.max(0, parseFloat(value)));
+}
+
+// 辅助函数：限制生成数量
+function clampOutputs(value, model) {
+  const outputs = parseInt(value);
+  return Math.min(model.max_outputs, Math.max(1, outputs));
+}
