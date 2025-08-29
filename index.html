@@ -263,9 +263,9 @@
             let currentImageParams = {};
             let currentImagesArray = null;
 
-            // --- 修改 3：为不同模型提供参数建议 ---
+            // 参数建议
             const modelRecommendations = {
-                'stable-diffusion-xl-base-1.0': { steps: 25, guidance: 7.5, maxSteps: 50 },
+                'stable-diffusion-xl-base-1.0': { steps: 20, guidance: 7.5, maxSteps: 20 },
                 'flux-1-schnell': { steps: 8, guidance: 5.0, maxSteps: 12 },
                 'dreamshaper-8-lcm': { steps: 10, guidance: 7.0, maxSteps: 20 },
                 'stable-diffusion-xl-lightning': { steps: 4, guidance: 2.0, maxSteps: 10 },
@@ -283,13 +283,11 @@
                     availableModels.forEach(model => {
                         const option = document.createElement('option');
                         option.value = model.id;
-                        // --- 修改 2：合并名称和描述 ---
                         option.textContent = `${model.name} - ${model.description}`;
                         modelSelect.appendChild(option);
                     });
                     if (availableModels.length > 0) {
                         modelSelect.value = availableModels[0].id;
-                        // 加载后手动触发一次 change 事件以应用初始建议值
                         modelSelect.dispatchEvent(new Event('change'));
                     }
                 } catch (error) {
@@ -361,23 +359,39 @@
                 const selected = availableModels.find(m => m.id === selectedModelId);
                 img2imgInputs.classList.toggle('hidden', !(selected && selected.requiresImage));
 
-                // --- 修改 3 的应用逻辑 ---
                 const recommendations = modelRecommendations[selectedModelId];
                 if (recommendations) {
                     const numStepsSlider = document.getElementById('num_steps');
                     const guidanceSlider = document.getElementById('guidance');
-
-                    // 1. 更新步数滑块的最大值
                     numStepsSlider.max = recommendations.maxSteps;
-                    
-                    // 2. 设置推荐值
                     numStepsSlider.value = recommendations.steps;
                     guidanceSlider.value = recommendations.guidance;
-
-                    // 3. 触发 input 事件以更新 UI 上的文本显示
                     numStepsSlider.dispatchEvent(new Event('input'));
                     guidanceSlider.dispatchEvent(new Event('input'));
                 }
+
+                // 修复点：SDXL 时将分辨率上限改为 1024，并限制生成数量最多 2
+                const isSDXL = selectedModelId === 'stable-diffusion-xl-base-1.0';
+                const widthSlider = document.getElementById('width');
+                const heightSlider = document.getElementById('height');
+                const widthValue = document.getElementById('widthValue');
+                const heightValue = document.getElementById('heightValue');
+                const numOutputsSel = document.getElementById('num_outputs');
+
+                const maxDim = isSDXL ? 1024 : 2048;
+                widthSlider.max = String(maxDim);
+                heightSlider.max = String(maxDim);
+                if (parseInt(widthSlider.value) > maxDim) widthSlider.value = String(maxDim);
+                if (parseInt(heightSlider.value) > maxDim) heightSlider.value = String(maxDim);
+                widthSlider.dispatchEvent(new Event('input'));
+                heightSlider.dispatchEvent(new Event('input'));
+                widthValue.textContent = `${widthSlider.value}px`;
+                heightValue.textContent = `${heightSlider.value}px`;
+
+                Array.from(numOutputsSel.options).forEach(opt => {
+                    if (['4','8'].includes(opt.value)) opt.disabled = isSDXL;
+                });
+                if (isSDXL && parseInt(numOutputsSel.value) > 2) numOutputsSel.value = '2';
             });
 
             ['width', 'height', 'num_steps', 'guidance'].forEach(id => {
@@ -507,7 +521,9 @@
                     startProgressBar(params.num_steps);
                     
                     pendingController = new AbortController();
-                    const timeoutId = setTimeout(() => pendingController.abort('timeout'), 90000);
+                    // 修复点：SDXL 提高超时到 150s，其它模型 90s
+                    const timeoutMs = (selectedModelMeta && selectedModelMeta.id === 'stable-diffusion-xl-base-1.0') ? 150000 : 90000;
+                    const timeoutId = setTimeout(() => pendingController.abort('timeout'), timeoutMs);
 
                     const response = await fetch('/', {
                         method: 'POST',
@@ -518,8 +534,10 @@
                     clearTimeout(timeoutId);
                     
                     if (!response.ok) {
+                        // 修复点：把 details 一并展示出来
                         const errorData = await response.json().catch(() => ({error: '未知错误'}));
-                        throw new Error(errorData.error || `请求失败: ${response.status}`);
+                        const msg = (errorData.error || `请求失败: ${response.status}`) + (errorData.details ? `：${errorData.details}` : '');
+                        throw new Error(msg);
                     }
                     
                     const respType = response.headers.get('content-type') || '';
@@ -567,8 +585,10 @@
                     finalizeUI(response, params, generationTime, serverSeconds, imagesArray);
                 } catch (error) {
                     showStatus(error.name === 'AbortError' ? '生成超时' : error.message, 'error');
+                    const initialPrompt = document.getElementById('initialPrompt');
                     initialPrompt.classList.remove('hidden');
                 } finally {
+                    const loadingOverlay = document.getElementById('loadingOverlay');
                     loadingOverlay.classList.add('hidden');
                     if (progressTimer) clearInterval(progressTimer);
                     pendingController = null;
@@ -757,5 +777,6 @@
             passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitLogin(); });
         }
     </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0b6ba2410bcd469da5b750e02c8e512a","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
