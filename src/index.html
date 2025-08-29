@@ -35,10 +35,6 @@
             --background: #111827;
             --card-bg: #1f2937;
             --border: #374151;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
         }
         
         body {
@@ -48,241 +44,40 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
         
-        .btn {
-            padding: 0.75rem 1rem;
-            border-radius: 0.375rem;
-            transition: all 0.3s;
-        }
+        .btn { padding: 1rem 1.5rem; border-radius: 0.375rem; transition: all 0.3s; }
         .btn:focus { outline: none; }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            box-shadow: 0 6px 12px rgba(80,70,229,0.15);
-        }
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 16px rgba(80,70,229,0.25);
-            filter: brightness(1.03);
-        }
-        .btn-primary:active {
-            transform: translateY(0);
-            filter: brightness(0.98);
-        }
-        
-        .btn-secondary {
-            background-color: var(--secondary);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        .btn-secondary:hover {
-            background-color: var(--border);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .btn-primary:active { background-color: var(--primary-dark); transform: translateY(0); }
+        .btn-secondary { background-color: var(--secondary); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background-color: var(--border); transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
         .btn-secondary:active { transform: translateY(0); }
-        
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .card:hover {
-            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-        }
-        .card:before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(1200px circle at var(--x, 0px) var(--y, 0px), rgba(80,70,229,0.08), transparent 40%);
-            transition: opacity 0.3s ease;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .card:hover:before { opacity: 1; }
-        
-        input, select, textarea {
-            background-color: var(--background);
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            transition: all 0.2s ease;
-            width: 100%;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.1);
-        }
-        
-        .slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 6px;
-            border-radius: 5px;
-            background: var(--border);
-            outline: none;
-            margin: 10px 0;
-        }
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(80,70,229,0.3);
-        }
-        .slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.2);
-        }
-        .slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-        }
-        .slider::-moz-range-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.2);
-        }
-
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; }
+        .card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        input, select, textarea { background-color: var(--background); color: var(--text); border: 1px solid var(--border); border-radius: 0.375rem; padding: 0.5rem 0.75rem; transition: all 0.3s ease; width: 100%; }
+        input[type="file"] { padding: 0.3rem 0.5rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.1); }
+        .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 5px; background: var(--border); outline: none; margin: 10px 0; }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary); cursor: pointer; transition: all 0.2s ease; }
+        .slider::-webkit-slider-thumb:hover { transform: scale(1.2); box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.2); }
+        .slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--primary); cursor: pointer; transition: all 0.2s ease; border: none; }
+        .slider::-moz-range-thumb:hover { transform: scale(1.2); box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.2); }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-        
-        .loading-mask {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65));
-            border-radius: 0.5rem;
-            z-index: 10;
-            backdrop-filter: blur(4px);
-        }
-        
-        .image-container {
-            aspect-ratio: 1 / 1;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--card-bg);
-            position: relative;
-            border-radius: 0.75rem;
-            max-height: 420px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        
-        #imageStatus {
-            position: absolute;
-            bottom: 1rem;
-            left: 1rem;
-            z-index: 20;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .param-badge {
-            background-color: var(--secondary);
-            color: var(--text);
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-            display: inline-block;
-            border: 1px solid var(--border);
-        }
-        
+        .loading-mask { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.6); border-radius: 0.5rem; z-index: 10; backdrop-filter: blur(4px); }
+        .image-container { aspect-ratio: 1 / 1; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: var(--card-bg); position: relative; border-radius: 0.5rem; max-height: 400px; margin: 0 auto; width: 100%; }
+        #imageStatus { position: absolute; bottom: 1rem; left: 1rem; z-index: 20; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .param-badge { background-color: var(--secondary); color: var(--text); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block; border: 1px solid var(--border); }
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
         .tooltip { position: relative; display: inline-block; }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--card-bg);
-            color: var(--text);
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border);
-            font-size: 0.75rem;
-        }
+        .tooltip .tooltiptext { visibility: hidden; width: 200px; background-color: var(--card-bg); color: var(--text); text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -100px; opacity: 0; transition: opacity 0.3s; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 1px solid var(--border); font-size: 0.75rem; }
         .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
-
         .hidden { display: none !important; }
-
-        @media (max-width: 768px) {
-            .mobile-flex-col { flex-direction: column; }
-            .container { padding-left: 1rem; padding-right: 1rem; }
-            .image-container { max-height: 400px; }
-        }
+        .file-upload-wrapper { position: relative; }
+        .file-upload-wrapper .file-name { font-size: 0.8rem; color: var(--text-light); margin-top: 4px; display: block; }
+        @media (max-width: 768px) { .mobile-flex-col { flex-direction: column; } .container { padding-left: 1rem; padding-right: 1rem; } .image-container { max-height: 400px; } }
         @media (min-width: 1024px) { .container { max-width: 1200px; } }
-
-        .text-primary { color: var(--primary); }
-
-        .k-badge {
-            border: 1px solid var(--border);
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 12px;
-            background: var(--secondary);
-        }
-        .chip {
-            border: 1px solid var(--border);
-            background: var(--secondary);
-            padding: 6px 10px;
-            border-radius: 999px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            display: inline-flex;
-            align-items: center;
-            transition: transform 0.15s ease, background 0.25s ease, box-shadow 0.25s ease;
-        }
-        .chip:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(0,0,0,0.06); }
-        .chip.active { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; border-color: var(--primary); }
-
-        .gradient-bar {
-            width: 64px; height: 4px; border-radius: 999px; margin-top: 6px;
-            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
-        }
-
-        .mask-canvas { touch-action: none; cursor: crosshair; }
-        .mask-stage { position: relative; }
-        .mask-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.18; pointer-events: none; border-radius: 0.5rem; }
-        .mask-stage canvas { position: relative; display: block; border-radius: 0.5rem; }
     </style>
 </head>
 <body class="min-h-screen py-4">
@@ -290,7 +85,6 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl md:text-3xl font-bold flex items-center">
                 🐳&nbsp;在线文生图服务
-                <div class="gradient-bar ml-3"></div>
             </h1>
             <div class="flex items-center space-x-2">
                 <button id="themeToggle" class="btn btn-secondary p-2 h-10 w-10 flex items-center justify-center" aria-label="切换暗色主题">
@@ -303,163 +97,95 @@
         </div>
 
         <div class="flex flex-col lg:flex-row gap-6 mobile-flex-col">
-            <!-- 左侧控制面板 -->
             <div class="w-full lg:w-2/5 space-y-4">
                 <div class="card p-4 space-y-4 fade-in">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold flex items-center">
-                            <i class="fa-solid fa-sliders mr-2 text-primary"></i>
-                            基本设置
-                        </h2>
-                        <button id="randomButton" class="btn btn-secondary text-sm py-1 px-3 flex items-center">
-                            <i class="fa-solid fa-dice mr-1"></i> 随机提示词
-                        </button>
+                        <h2 class="text-lg font-semibold flex items-center"><i class="fa-solid fa-sliders mr-2 text-primary"></i>基本设置</h2>
+                        <button id="randomButton" class="btn btn-secondary text-sm py-1 px-3 flex items-center"><i class="fa-solid fa-dice mr-1"></i> 随机提示词</button>
                     </div>
-
+                    
                     <div>
-                        <label for="prompt" class="block text-sm font-medium mb-1 flex items-center">
-                            <i class="fa-solid fa-wand-magic-sparkles mr-1 text-xs"></i> 正向提示词
-                        </label>
+                        <label for="prompt" class="block text-sm font-medium mb-1 flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-xs"></i> 正向提示词</label>
                         <textarea id="prompt" rows="3" placeholder="描述您想要生成的图像内容及样式..." class="w-full"></textarea>
-                        <!-- 风格预设按钮组 -->
-                        <div id="stylePresets" class="mt-2">
-                            <span class="chip" data-style="cyberpunk">赛博朋克</span>
-                            <span class="chip" data-style="watercolor">水彩画</span>
-                            <span class="chip" data-style="anime">动漫</span>
-                            <span class="chip" data-style="photoreal">写实感</span>
-                        </div>
                     </div>
-
+                    
                     <div>
-                        <label for="negative_prompt" class="block text-sm font-medium mb-1 flex items-center">
-                            <i class="fa-solid fa-ban mr-1 text-xs"></i> 反向提示词
-                        </label>
-                        <textarea id="negative_prompt" rows="2" placeholder="描述要避免的元素，提升画面质量..." class="w-full"></textarea>
+                        <label for="negative_prompt" class="block text-sm font-medium mb-1 flex items-center"><i class="fa-solid fa-ban mr-1 text-xs"></i> 反向提示词</label>
+                        <textarea id="negative_prompt" rows="2" placeholder="描述在生成的图像中要避免的元素文本..." class="w-full"></textarea>
                     </div>
-
+                    
                     <div>
-                        <label for="model" class="block text-sm font-medium mb-1 flex items-center">
-                            <i class="fa-solid fa-robot mr-1 text-xs"></i> 文生图模型
-                        </label>
+                        <label for="model" class="block text-sm font-medium mb-1 flex items-center"><i class="fa-solid fa-robot mr-1 text-xs"></i> 模型</label>
                         <select id="model" class="w-full">
                             <option value="loading" disabled selected>加载中...</option>
                         </select>
-                        <p class="text-xs text-gray-500 mt-2">部分模型需要提供图片URL或遮罩URL（见下方输入框）。</p>
                     </div>
 
-                    <!-- 图生图/重绘扩展 -->
-                    <div id="img2imgInputs" class="hidden space-y-2">
-                        <div>
-                            <label for="image_url" class="block text-sm font-medium mb-1 flex items-center">
-                                <i class="fa-solid fa-image mr-1 text-xs"></i> 输入图像URL（可直接上传）
-                            </label>
-                            <div class="flex items-center gap-2">
-                                <input type="url" id="image_url" placeholder="https://example.com/your-image.png" class="w-full">
-                                <label class="btn btn-secondary text-sm cursor-pointer">
-                                    <input type="file" id="image_file" accept="image/*" class="hidden">
-                                    <i class="fa-solid fa-upload mr-1"></i> 上传
-                                </label>
-                            </div>
-                            <p id="imageUploadHint" class="text-xs text-gray-500 mt-1">选择本地图片自动上传到 R2，并填充 URL</p>
+                    <div id="img2imgInputs" class="hidden space-y-3">
+                        <div class="file-upload-wrapper">
+                            <label for="image_file" class="block text-sm font-medium mb-1 flex items-center"><i class="fa-solid fa-image mr-1 text-xs"></i> 上传输入图像（必填）</label>
+                            <input type="file" id="image_file" class="w-full" accept="image/png, image/jpeg, image/webp">
+                            <span id="image_file_name" class="file-name">未选择文件</span>
                         </div>
-                        <div id="maskInputBlock" class="hidden">
-                            <label for="mask_url" class="block text-sm font-medium mb-1 flex items-center">
-                                <i class="fa-solid fa-mask mr-1 text-xs"></i> 遮罩图像URL（可用编辑器生成）
-                            </label>
-                            <div class="flex items-center gap-2">
-                                <input type="url" id="mask_url" placeholder="https://example.com/your-mask.png" class="w-full">
-                                <button id="openMaskEditor" class="btn btn-secondary text-sm">
-                                    <i class="fa-solid fa-pen-nib mr-1"></i> 遮罩编辑器
-                                </button>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">浏览器中绘制遮罩，导出并上传，自动填充 URL</p>
+                        <div class="file-upload-wrapper">
+                            <label for="mask_file" class="block text-sm font-medium mb-1 flex items-center"><i class="fa-solid fa-mask mr-1 text-xs"></i> 上传遮罩图像（局部重绘必填）</label>
+                            <input type="file" id="mask_file" class="w-full" accept="image/png, image/jpeg, image/webp">
+                            <span id="mask_file_name" class="file-name">未选择文件</span>
                         </div>
-                    </div>
-
-                     <!-- 生成数量下拉 -->
-                    <div id="numOutputsContainer">
-                        <label for="num_outputs" class="block text-sm font-medium mb-1 flex items-center">
-                            <i class="fa-solid fa-layer-group mr-1 text-xs"></i> 生成数量
-                        </label>
-                        <select id="num_outputs" class="w-full">
-                            <option value="1" selected>1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                        </select>
                     </div>
                 </div>
                 
                 <div class="card p-4 space-y-4 fade-in">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold flex items-center">
-                            <i class="fa-solid fa-gear mr-2 text-primary"></i>
-                            高级选项
-                        </h2>
-                        <button id="toggleAdvanced" class="text-xs btn btn-secondary py-1 px-3 flex items-center">
-                            <i class="fa-solid fa-chevron-down mr-1" id="advancedIcon"></i> 显示/隐藏
-                        </button>
+                        <h2 class="text-lg font-semibold flex items-center"><i class="fa-solid fa-gear mr-2 text-primary"></i>高级选项</h2>
+                        <button id="toggleAdvanced" class="text-xs btn btn-secondary py-1 px-3 flex items-center"><i class="fa-solid fa-chevron-down mr-1" id="advancedIcon"></i> 显示/隐藏</button>
                     </div>
                     
                     <div id="advancedOptions" class="space-y-3 hidden">
                         <div>
                             <div class="flex justify-between items-center">
-                                <label for="width" class="block text-sm font-medium flex items-center">
-                                    <i class="fa-solid fa-arrows-left-right mr-1 text-xs"></i> 图像宽度
-                                </label>
+                                <label for="width" class="block text-sm font-medium flex items-center"><i class="fa-solid fa-arrows-left-right mr-1 text-xs"></i> 图像宽度</label>
                                 <span id="widthValue" class="text-sm font-mono">1024px</span>
                             </div>
                             <input type="range" id="width" min="256" max="2048" step="64" value="1024" class="slider w-full">
                         </div>
-                        
                         <div>
                             <div class="flex justify-between items-center">
-                                <label for="height" class="block text-sm font-medium flex items-center">
-                                    <i class="fa-solid fa-arrows-up-down mr-1 text-xs"></i> 图像高度
-                                </label>
+                                <label for="height" class="block text-sm font-medium flex items-center"><i class="fa-solid fa-arrows-up-down mr-1 text-xs"></i> 图像高度</label>
                                 <span id="heightValue" class="text-sm font-mono">1024px</span>
                             </div>
                             <input type="range" id="height" min="256" max="2048" step="64" value="1024" class="slider w-full">
                         </div>
-                        
                         <div>
                             <div class="flex justify-between items-center">
-                                <label for="num_steps" class="block text-sm font-medium flex items-center tooltip">
-                                    <i class="fa-solid fa-shoe-prints mr-1 text-xs"></i> 迭代步数
-                                    <span class="tooltiptext">更高的步数通常会产生更精细的细节，但需要更长的处理时间</span>
-                                </label>
+                                <label for="num_steps" class="block text-sm font-medium flex items-center tooltip"><i class="fa-solid fa-shoe-prints mr-1 text-xs"></i> 迭代步数<span class="tooltiptext">更高的步数通常会产生更精细的细节，但需要更长的处理时间</span></label>
                                 <span id="num_stepsValue" class="text-sm font-mono">20</span>
                             </div>
                             <input type="range" id="num_steps" min="1" max="50" step="1" value="20" class="slider w-full">
                         </div>
-                        
                         <div>
                             <div class="flex justify-between items-center">
-                                <label for="guidance" class="block text-sm font-medium flex items-center tooltip">
-                                    <i class="fa-solid fa-compass mr-1 text-xs"></i> 引导系数
-                                    <span class="tooltiptext">控制生成图像与提示词的匹配程度，较高的值会更严格遵循提示词</span>
-                                </label>
+                                <label for="guidance" class="block text-sm font-medium flex items-center tooltip"><i class="fa-solid fa-compass mr-1 text-xs"></i> 引导系数<span class="tooltiptext">控制生成图像与提示词的匹配程度，较高的值会更严格遵循提示词</span></label>
                                 <span id="guidanceValue" class="text-sm font-mono">7.5</span>
                             </div>
                             <input type="range" id="guidance" min="0" max="30" step="0.5" value="7.5" class="slider w-full">
                         </div>
-                        
                         <div>
-                            <label for="seed" class="block text-sm font-medium mb-1 flex items-center tooltip">
-                                <i class="fa-solid fa-seedling mr-1 text-xs"></i> 随机种子
-                                <span class="tooltiptext">使用相同的种子值可以在其他参数相同的情况下生成相似的图像</span>
-                            </label>
+                            <label for="seed" class="block text-sm font-medium mb-1 flex items-center tooltip"><i class="fa-solid fa-seedling mr-1 text-xs"></i> 随机种子<span class="tooltiptext">使用相同的种子值可以在其他参数相同的情况下生成相似的图像</span></label>
                             <div class="flex gap-2">
                                 <input type="number" id="seed" placeholder="随机种子值" class="w-full">
-                                <button id="randomSeed" class="btn btn-secondary text-sm py-1 px-3">
-                                    <i class="fa-solid fa-random"></i>
-                                </button>
+                                <button id="randomSeed" class="btn btn-secondary text-sm py-1 px-3"><i class="fa-solid fa-random"></i></button>
                             </div>
                             <p class="text-xs text-gray-500 mt-1">留空则随机生成</p>
+                        </div>
+                        <div>
+                            <label for="num_outputs" class="block text-sm font-medium mb-1 flex items-center"><i class="fa-solid fa-layer-group mr-1 text-xs"></i> 生成数量</label>
+                            <select id="num_outputs" class="w-full">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="4">4</option>
+                                <option value="8">8</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -469,24 +195,14 @@
                 </button>
             </div>
             
-            <!-- 右侧图像展示 -->
-            <div class="w-full lg:w-3/5 space-y-4">
+            <div class="w-full lg:w-3/5">
                 <div class="card h-full p-4 space-y-4 fade-in">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold flex items-center">
-                            <i class="fa-solid fa-image mr-2 text-primary"></i>
-                            生成结果
-                        </h2>
+                        <h2 class="text-lg font-semibold flex items-center"><i class="fa-solid fa-image mr-2 text-primary"></i>生成结果</h2>
                         <div class="flex space-x-2">
-                            <button id="copyParamsButton" class="btn btn-secondary text-sm py-1 px-3 hidden">
-                                <i class="fa-solid fa-copy mr-1"></i> 复制参数
-                            </button>
-                            <button id="downloadButton" class="btn btn-secondary text-sm py-1 px-3 hidden">
-                                <i class="fa-solid fa-download mr-1"></i> 下载图像
-                            </button>
-                            <button id="downloadZipButton" class="btn btn-secondary text-sm py-1 px-3 hidden">
-                                <i class="fa-solid fa-file-zipper mr-1"></i> 下载ZIP
-                            </button>
+                            <button id="copyParamsButton" class="btn btn-secondary text-sm py-1 px-3 hidden"><i class="fa-solid fa-copy mr-1"></i> 复制参数</button>
+                            <button id="downloadButton" class="btn btn-secondary text-sm py-1 px-3 hidden"><i class="fa-solid fa-download mr-1"></i> 下载图像</button>
+                            <button id="downloadZipButton" class="btn btn-secondary text-sm py-1 px-3 hidden"><i class="fa-solid fa-file-zipper mr-1"></i> 下载ZIP</button>
                         </div>
                     </div>
                     
@@ -494,7 +210,7 @@
                         <div id="loadingOverlay" class="loading-mask hidden">
                             <div class="text-center w-full px-6">
                                 <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
-                                <p class="text-white mt-3 font-medium">生成中，请稍候...</p>
+                                <p id="loadingStatusText" class="text-white mt-3 font-medium">生成中，请稍候...</p>
                                 <p class="text-white text-sm mt-1">这可能需要几秒到几十秒不等</p>
                                 <div id="progressBarContainer" class="w-full mt-4">
                                     <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
@@ -511,125 +227,52 @@
                             <i class="fa-solid fa-image-portrait text-4xl mb-2"></i>
                             <p>点击生成按钮开始创建图像</p>
                         </div>
-                        <span id="imageStatus" class="bg-gray-300 text-gray-700 hidden" role="status" aria-live="polite">状态</span>
+                        <span id="imageStatus" class="bg-gray-300 text-gray-700 hidden">状态</span>
                         <img id="aiImage" class="max-h-full max-w-full rounded hidden" alt="生成的图像">
                         <div id="imageGallery" class="grid grid-cols-4 gap-2 mt-3 hidden"></div>
                     </div>
                     
                     <div id="imageInfo" class="space-y-3 mt-2">
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="text-sm flex items-center">
-                                <span class="font-medium flex items-center">
-                                    <i class="fa-regular fa-clock mr-1 text-xs"></i> 生成时间：
-                                </span>
-                                <span id="generationTime" class="ml-1">-</span>
-                            </div>
-                            <div class="text-sm flex items-center">
-                                <span class="font-medium flex items-center">
-                                    <i class="fa-solid fa-microchip mr-1 text-xs"></i> 使用模型：
-                                </span>
-                                <span id="usedModel" class="ml-1">-</span>
-                            </div>
-                            <div class="text-sm flex items-center">
-                                <span class="font-medium flex items-center">
-                                    <i class="fa-solid fa-bolt mr-1 text-xs"></i> 算力估计：
-                                </span>
-                                <span id="computeInfo" class="ml-1">-</span>
-                                <span class="text-xs text-gray-500 ml-2">(it/s)</span>
-                            </div>
-                            <div class="text-sm flex items-center">
-                                <span class="font-medium flex items-center">
-                                    <i class="fa-solid fa-database mr-1 text-xs"></i> 输出大小：
-                                </span>
-                                <span id="imageSize" class="ml-1">-</span>
-                            </div>
+                            <div><span class="font-medium flex items-center"><i class="fa-regular fa-clock mr-1 text-xs"></i> 生成时间：</span><span id="generationTime" class="ml-1">-</span></div>
+                            <div><span class="font-medium flex items-center"><i class="fa-solid fa-microchip mr-1 text-xs"></i> 使用模型：</span><span id="usedModel" class="ml-1">-</span></div>
+                            <div><span class="font-medium flex items-center"><i class="fa-solid fa-bolt mr-1 text-xs"></i> 算力估计：</span><span id="computeInfo" class="ml-1">-</span><span class="text-xs text-gray-500 ml-2">(it/s)</span></div>
+                            <div><span class="font-medium flex items-center"><i class="fa-solid fa-database mr-1 text-xs"></i> 输出大小：</span><span id="imageSize" class="ml-1">-</span></div>
                         </div>
-                        
                         <div id="allParamsContainer" class="hidden mt-3 border-t border-gray-200 dark:border-gray-700 pt-3">
-                            <h3 class="text-sm font-medium mb-2 flex items-center">
-                                <i class="fa-solid fa-list-check mr-1"></i> 所有参数
-                            </h3>
+                            <h3 class="text-sm font-medium mb-2 flex items-center"><i class="fa-solid fa-list-check mr-1"></i> 所有参数</h3>
                             <div id="allParams" class="flex flex-wrap"></div>
                         </div>
-
                         <div id="imageMeta" class="hidden mt-3 border-t border-gray-200 dark:border-gray-700 pt-3">
-                            <h3 class="text-sm font-medium mb-2 flex items-center">
-                                <i class="fa-solid fa-table mr-1"></i> 每张图片信息
-                            </h3>
+                            <h3 class="text-sm font-medium mb-2 flex items-center"><i class="fa-solid fa-table mr-1"></i> 每张图片信息</h3>
                             <table class="w-full text-xs">
-                                <thead>
-                                    <tr class="text-left">
-                                        <th class="py-1">#</th>
-                                        <th class="py-1">尺寸</th>
-                                        <th class="py-1">大小</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr class="text-left"><th class="py-1">#</th><th class="py-1">尺寸</th><th class="py-1">大小</th></tr></thead>
                                 <tbody id="imageMetaBody"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
-                <!-- 历史记录卡片 -->
-                <div class="card p-4 space-y-3 fade-in">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold flex items-center">
-                            <i class="fa-solid fa-clock-rotate-left mr-2 text-primary"></i>
-                            历史记录
-                        </h2>
-                        <div class="flex gap-2">
-                            <span class="k-badge" id="historyCount">0 条</span>
-                            <button id="clearHistory" class="btn btn-secondary text-sm py-1 px-3">
-                                <i class="fa-solid fa-trash mr-1"></i> 清空
-                            </button>
-                        </div>
-                    </div>
-                    <div id="historyGrid" class="grid grid-cols-5 gap-2"></div>
-                    <p id="historyEmpty" class="text-xs text-gray-500">暂无历史记录</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 遮罩编辑器模态层 -->
-    <div id="maskEditorModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
-        <div class="card p-4 w-full max-w-3xl bg-white dark:bg-gray-800">
-            <h3 class="text-lg font-semibold mb-3 flex items-center">
-                <i class="fa-solid fa-pen-nib mr-2 text-primary"></i> 遮罩编辑器
-            </h3>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 mask-stage">
-                    <img id="maskBaseImg" src="" alt="遮罩底图">
-                    <canvas id="maskCanvas" class="w-full h-auto border border-gray-300 rounded mask-canvas"></canvas>
-                </div>
-                <div class="w-full md:w-56 space-y-3">
-                    <div>
-                        <label class="text-sm font-medium mb-1 block">画笔大小: <span id="brushSizeVal">30</span></label>
-                        <input type="range" id="brushSize" min="5" max="80" value="30" class="slider w-full">
-                    </div>
-                    <div class="space-y-2">
-                        <button id="maskClear" class="btn btn-secondary w-full"><i class="fa-solid fa-eraser mr-1"></i> 清空画布</button>
-                        <button id="maskApply" class="btn btn-primary w-full"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> 导出并上传</button>
-                    </div>
-                    <p class="text-xs text-gray-500">在画布上涂抹白色区域进行重绘。透明部分将保持不变。</p>
-                </div>
-            </div>
-            <div class="text-right mt-3">
-                <button id="maskClose" class="btn btn-secondary">关闭</button>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // 初始化模型列表与状态
             let availableModels = [];
             let randomPromptsList = [];
             let currentImageParams = {};
             let currentImagesArray = null;
-            let appliedStyleSet = new Set();
 
-            // 加载模型列表
+            // --- 修改 3：为不同模型提供参数建议 ---
+            const modelRecommendations = {
+                'stable-diffusion-xl-base-1.0': { steps: 25, guidance: 7.5, maxSteps: 50 },
+                'flux-1-schnell': { steps: 8, guidance: 5.0, maxSteps: 12 },
+                'dreamshaper-8-lcm': { steps: 10, guidance: 7.0, maxSteps: 20 },
+                'stable-diffusion-xl-lightning': { steps: 4, guidance: 2.0, maxSteps: 10 },
+                'stable-diffusion-v1-5-img2img': { steps: 30, guidance: 8.0, maxSteps: 50 },
+                'stable-diffusion-v1-5-inpainting': { steps: 30, guidance: 8.0, maxSteps: 50 }
+            };
+            
             async function loadModels() {
                 try {
                     const response = await fetch('/api/models');
@@ -640,38 +283,35 @@
                     availableModels.forEach(model => {
                         const option = document.createElement('option');
                         option.value = model.id;
+                        // --- 修改 2：合并名称和描述 ---
                         option.textContent = `${model.name} - ${model.description}`;
-                        option.dataset.requiresImage = model.requiresImage ? '1' : '0';
-                        if (model.requiresMask) option.dataset.requiresMask = '1';
                         modelSelect.appendChild(option);
                     });
                     if (availableModels.length > 0) {
-                        modelSelect.value = availableModels[0].id; // 默认第一个
-                        syncImg2ImgFields();
+                        modelSelect.value = availableModels[0].id;
+                        // 加载后手动触发一次 change 事件以应用初始建议值
+                        modelSelect.dispatchEvent(new Event('change'));
                     }
                 } catch (error) {
-                    console.error('Load models error:', error);
+                    console.error('加载模型列表错误:', error);
                     showStatus('加载模型列表失败', 'error');
                 }
             }
-
-            // 加载随机提示词
+            
             async function loadRandomPrompts() {
                 try {
                     const response = await fetch('/api/prompts');
                     if (!response.ok) throw new Error('加载提示词失败');
                     randomPromptsList = await response.json();
                 } catch (error) {
-                    console.error('Load prompts error:', error);
-                    randomPromptsList = ['无法加载提示词库，请手动输入'];
+                    console.error('加载提示词错误:', error);
+                    randomPromptsList = ['未能加载提示词列表'];
                 }
             }
-
-            // 初始化
+            
             loadModels();
             loadRandomPrompts();
 
-            // 检查是否需要登录
             (async () => {
                 try {
                     const res = await fetch('/api/config');
@@ -681,185 +321,134 @@
                     }
                 } catch (_) {}
             })();
-
-            // 主题切换
+            
             const themeToggle = document.getElementById('themeToggle');
             const html = document.documentElement;
             const moonIcon = `<i class="fa-solid fa-moon"></i>`;
             const sunIcon = `<i class="fa-solid fa-sun"></i>`;
+            
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                html.classList.add('dark'); themeToggle.innerHTML = sunIcon; themeToggle.setAttribute('aria-label', '切换亮色主题');
+                html.classList.add('dark');
+                themeToggle.innerHTML = sunIcon;
             } else {
-                html.classList.remove('dark'); themeToggle.innerHTML = moonIcon; themeToggle.setAttribute('aria-label', '切换暗色主题');
+                themeToggle.innerHTML = moonIcon;
             }
+            
             themeToggle.addEventListener('click', function() {
-                if (html.classList.contains('dark')) { html.classList.remove('dark'); localStorage.theme = 'light'; themeToggle.innerHTML = moonIcon; themeToggle.setAttribute('aria-label', '切换暗色主题'); }
-                else { html.classList.add('dark'); localStorage.theme = 'dark'; themeToggle.innerHTML = sunIcon; themeToggle.setAttribute('aria-label', '切换亮色主题'); }
+                html.classList.toggle('dark');
+                if (html.classList.contains('dark')) {
+                    localStorage.theme = 'dark';
+                    themeToggle.innerHTML = sunIcon;
+                } else {
+                    localStorage.theme = 'light';
+                    themeToggle.innerHTML = moonIcon;
+                }
             });
-
-            // 高级选项
+            
             const toggleAdvanced = document.getElementById('toggleAdvanced');
             const advancedOptions = document.getElementById('advancedOptions');
             const advancedIcon = document.getElementById('advancedIcon');
             toggleAdvanced.addEventListener('click', function() {
-                if (advancedOptions.classList.contains('hidden')) { advancedOptions.classList.remove('hidden'); advancedIcon.classList.replace('fa-chevron-down','fa-chevron-up'); }
-                else { advancedOptions.classList.add('hidden'); advancedIcon.classList.replace('fa-chevron-up','fa-chevron-down'); }
+                advancedOptions.classList.toggle('hidden');
+                advancedIcon.classList.toggle('fa-chevron-down');
+                advancedIcon.classList.toggle('fa-chevron-up');
             });
-
-            // 模型切换时显示/隐藏图生图字段
+            
             const modelSelectEl = document.getElementById('model');
             const img2imgInputs = document.getElementById('img2imgInputs');
-            const maskInputBlock = document.getElementById('maskInputBlock');
-            function syncImg2ImgFields() {
-                const selId = modelSelectEl.value;
-                const meta = availableModels.find(m => m.id === selId);
-                if (meta && meta.requiresImage) img2imgInputs.classList.remove('hidden');
-                else img2imgInputs.classList.add('hidden');
-                if (meta && meta.requiresMask) maskInputBlock.classList.remove('hidden'); else maskInputBlock.classList.add('hidden');
-            }
-            modelSelectEl.addEventListener('change', syncImg2ImgFields);
+            modelSelectEl.addEventListener('change', function() {
+                const selectedModelId = this.value;
+                const selected = availableModels.find(m => m.id === selectedModelId);
+                img2imgInputs.classList.toggle('hidden', !(selected && selected.requiresImage));
 
-            // 滑块值显示
-            const sliders = ['width', 'height', 'num_steps', 'guidance'];
-            sliders.forEach(id => {
+                // --- 修改 3 的应用逻辑 ---
+                const recommendations = modelRecommendations[selectedModelId];
+                if (recommendations) {
+                    const numStepsSlider = document.getElementById('num_steps');
+                    const guidanceSlider = document.getElementById('guidance');
+
+                    // 1. 更新步数滑块的最大值
+                    numStepsSlider.max = recommendations.maxSteps;
+                    
+                    // 2. 设置推荐值
+                    numStepsSlider.value = recommendations.steps;
+                    guidanceSlider.value = recommendations.guidance;
+
+                    // 3. 触发 input 事件以更新 UI 上的文本显示
+                    numStepsSlider.dispatchEvent(new Event('input'));
+                    guidanceSlider.dispatchEvent(new Event('input'));
+                }
+            });
+
+            ['width', 'height', 'num_steps', 'guidance'].forEach(id => {
                 const slider = document.getElementById(id);
                 const valueDisplay = document.getElementById(`${id}Value`);
-                slider.addEventListener('input', function() {
-                    if (id === 'width' || id === 'height') valueDisplay.textContent = `${this.value}px`;
-                    else if (id === 'guidance') valueDisplay.textContent = parseFloat(this.value).toFixed(2);
-                    else valueDisplay.textContent = this.value;
+                slider.addEventListener('input', () => {
+                    const unit = (id === 'width' || id === 'height') ? 'px' : '';
+                    const fixed = (id === 'guidance') ? 1 : 0;
+                    valueDisplay.textContent = `${parseFloat(slider.value).toFixed(fixed)}${unit}`;
                 });
             });
 
-            // 随机种子
-            document.getElementById('randomSeed').addEventListener('click', function() {
+            ['image_file', 'mask_file'].forEach(id => {
+                const fileInput = document.getElementById(id);
+                const fileNameSpan = document.getElementById(`${id}_name`);
+                fileInput.addEventListener('change', () => {
+                    fileNameSpan.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : '未选择文件';
+                });
+            });
+            
+            document.getElementById('randomSeed').addEventListener('click', () => {
                 document.getElementById('seed').value = Math.floor(Math.random() * 4294967295);
             });
-
-            // 随机提示词
-            document.getElementById('randomButton').addEventListener('click', function() {
+            
+            document.getElementById('randomButton').addEventListener('click', () => {
                 if (randomPromptsList.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * randomPromptsList.length);
-                    document.getElementById('prompt').value = randomPromptsList[randomIndex];
-                } else {
-                    showStatus('提示词列表未加载，请稍后再试', 'error');
-                }
-            });
-
-            // 风格预设
-            const PRESETS = {
-                cyberpunk: 'cyberpunk, neon lights, high contrast, rain, night, cinematic, dystopian',
-                watercolor: 'watercolor style, soft brush, ink wash, pastel tones, paper texture',
-                anime: 'anime style, cel shading, vibrant colors, clean line art, expressive eyes',
-                photoreal: 'photorealistic, ultra-detailed, sharp focus, 8k, high dynamic range, realistic lighting'
-            };
-            const styleContainer = document.getElementById('stylePresets');
-            styleContainer.addEventListener('click', (e) => {
-                const chip = e.target.closest('.chip');
-                if (!chip) return;
-                const key = chip.dataset.style;
-                if (!PRESETS[key]) return;
-                const promptEl = document.getElementById('prompt');
-                const tokens = PRESETS[key];
-                if (appliedStyleSet.has(key)) {
-                    const cur = promptEl.value;
-                    const removed = cur.replace(new RegExp(',?\\s*' + tokens.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '').replace(/\s{2,}/g, ' ').trim().replace(/^,/, '').trim();
-                    promptEl.value = removed;
-                    appliedStyleSet.delete(key);
-                    chip.classList.remove('active');
-                } else {
-                    if (!promptEl.value.includes(tokens)) {
-                        promptEl.value = `${promptEl.value.trim()}${promptEl.value.trim() ? ', ' : ''}${tokens}`.trim();
-                    }
-                    appliedStyleSet.add(key);
-                    chip.classList.add('active');
+                    document.getElementById('prompt').value = randomPromptsList[Math.floor(Math.random() * randomPromptsList.length)];
                 }
             });
             
-            // 卡片辉光效果
-            document.querySelectorAll('.card').forEach(card => {
-                card.onmousemove = e => {
-                    const rect = card.getBoundingClientRect();
-                    card.style.setProperty('--x', e.clientX - rect.left + 'px');
-                    card.style.setProperty('--y', e.clientY - rect.top + 'px');
-                };
-            });
-
-            // 复制参数
             document.getElementById('copyParamsButton').addEventListener('click', function() {
                 if (!currentImageParams) return;
                 let paramsText = '--- AI绘图创作生成参数 ---\n';
                 for (const [key, value] of Object.entries(currentImageParams)) {
-                    if (key === 'password') continue;
                     paramsText += `${formatParamName(key)}: ${value}\n`;
                 }
-                navigator.clipboard.writeText(paramsText)
-                    .then(() => showStatus('参数已复制到剪贴板', 'success'))
-                    .catch(err => { console.error('Copy failed:', err); showStatus('复制参数失败', 'error'); });
+                navigator.clipboard.writeText(paramsText).then(() => showStatus('参数已复制', 'success'), () => showStatus('复制失败', 'error'));
             });
-
+            
             function formatParamName(name) {
-                const nameMap = {
-                    'prompt': '正向提示词', 'negative_prompt': '反向提示词', 'model': '文生图模型',
-                    'width': '图像宽度', 'height': '图像高度', 'num_steps': '迭代步数',
-                    'guidance': '引导系数', 'seed': '随机种子', 'num_outputs': '生成数量',
-                    'image_url': '输入图像URL', 'mask_url': '遮罩URL'
-                };
+                const nameMap = {'prompt':'正向提示词','negative_prompt':'反向提示词','model':'模型','width':'宽度','height':'高度','num_steps':'步数','guidance':'引导系数','seed':'种子'};
                 return nameMap[name] || name;
             }
-
-            // 下载按钮
+            
             document.getElementById('downloadButton').addEventListener('click', async function() {
-                const img = document.getElementById('aiImage');
-                const gallery = document.getElementById('imageGallery');
-                let src = '';
-                if (!gallery.classList.contains('hidden') && currentImagesArray && currentImagesArray.length > 0) src = currentImagesArray[0];
-                else src = img.src;
-                if (!src) return showStatus('没有可下载的图像', 'error');
-
-                try {
-                    const response = await fetch(src);
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                    const model = document.getElementById('usedModel').textContent || 'ai-image';
-                    link.href = url; link.download = `${model}-${timestamp}.png`;
-                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
-                    showStatus('图像下载成功', 'success');
-                } catch (error) {
-                    console.error('Download error:', error);
-                    showStatus('下载图像失败', 'error');
-                }
+                const src = currentImagesArray ? currentImagesArray[0] : document.getElementById('aiImage').src;
+                if (!src) return;
+                downloadImage(src, 0);
             });
 
-            // 下载 ZIP（多图）
             document.getElementById('downloadZipButton').addEventListener('click', async function() {
-                if (!currentImagesArray || currentImagesArray.length === 0) return showStatus('没有可打包的图片', 'error');
+                if (!currentImagesArray || currentImagesArray.length === 0) return;
                 try {
                     const zip = new JSZip();
-                    const model = document.getElementById('usedModel').textContent || 'ai-image';
+                    const model = getModelNameById(currentImageParams.model) || 'ai-image';
                     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                    for (let i = 0; i < currentImagesArray.length; i++) {
-                        const dataURL = currentImagesArray[i];
-                        const base64 = dataURL.split(',')[1];
-                        zip.file(`${model}-${timestamp}-${i+1}.png`, base64, { base64: true });
-                    }
+                    currentImagesArray.forEach((dataURL, i) => {
+                        zip.file(`${model}-${timestamp}-${i+1}.png`, dataURL.split(',')[1], { base64: true });
+                    });
                     const blob = await zip.generateAsync({ type: 'blob' });
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
-                    link.href = url; link.download = `${model}-${timestamp}.zip`;
-                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                    link.href = url;
+                    link.download = `${model}-${timestamp}.zip`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
                     window.URL.revokeObjectURL(url);
-                    showStatus('ZIP 下载已开始', 'success');
-                } catch (e) {
-                    console.error('ZIP pack failed:', e);
-                    showStatus('打包ZIP失败', 'error');
-                }
+                } catch (e) { showStatus('打包ZIP失败', 'error'); }
             });
-
-            // 提交生成请求
+            
             let progressTimer = null;
             let pendingController = null;
 
@@ -867,551 +456,306 @@
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 const initialPrompt = document.getElementById('initialPrompt');
                 const aiImage = document.getElementById('aiImage');
-                const progressBarContainer = document.getElementById('progressBarContainer');
-                const progressBar = document.getElementById('progressBar');
-                const progressText = document.getElementById('progressText');
-                const progressExtra = document.getElementById('progressExtra');
-
-                if (!loadingOverlay || !initialPrompt || !aiImage) {
-                    console.error('Missing DOM elements');
-                    return;
-                }
-
+                const loadingStatusText = document.getElementById('loadingStatusText');
+                
                 initialPrompt.classList.add('hidden');
                 aiImage.classList.add('hidden');
                 loadingOverlay.classList.remove('hidden');
+                
+                ['imageStatus', 'copyParamsButton', 'downloadButton', 'downloadZipButton'].forEach(id => document.getElementById(id).classList.add('hidden'));
+                if (progressTimer) clearInterval(progressTimer);
+                if (pendingController) try { pendingController.abort(); } catch(_){}
 
-                const imageStatus = document.getElementById('imageStatus');
-                const copyParamsButton = document.getElementById('copyParamsButton');
-                const downloadButton = document.getElementById('downloadButton');
-                if (imageStatus) imageStatus.classList.add('hidden');
-                if (copyParamsButton) copyParamsButton.classList.add('hidden');
-                if (downloadButton) downloadButton.classList.add('hidden');
-                if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
-                if (pendingController) { try { pendingController.abort(); } catch(_){ } pendingController = null; }
-
-                const promptText = (document.getElementById('prompt')?.value || '').trim();
-                if (!promptText) {
-                    showStatus('正向提示词不能为空', 'error');
-                    loadingOverlay.classList.add('hidden');
-                    initialPrompt.classList.remove('hidden');
-                    return;
-                }
-
-                const rawParams = {
-                    prompt: promptText,
-                    negative_prompt: document.getElementById('negative_prompt')?.value || '',
-                    model: document.getElementById('model')?.value,
-                    width: parseInt(document.getElementById('width')?.value) || 1024,
-                    height: parseInt(document.getElementById('height')?.value) || 1024,
-                    num_steps: parseInt(document.getElementById('num_steps')?.value) || 20,
-                    guidance: parseFloat(document.getElementById('guidance')?.value) || 7.5,
-                    seed: parseInt(document.getElementById('seed')?.value) || Math.floor(Math.random() * 4294967295),
-                    image_url: document.getElementById('image_url')?.value || '',
-                    mask_url: document.getElementById('mask_url')?.value || '',
-                    num_outputs: parseInt(document.getElementById('num_outputs')?.value) || 1
-                };
-                const selectedModelMeta = availableModels.find(m => m.id === rawParams.model);
+                const selectedModelMeta = availableModels.find(m => m.id === document.getElementById('model').value);
                 const params = {
-                    prompt: rawParams.prompt,
-                    negative_prompt: rawParams.negative_prompt,
-                    model: rawParams.model,
-                    width: rawParams.width,
-                    height: rawParams.height,
-                    num_steps: rawParams.num_steps,
-                    guidance: rawParams.guidance,
-                    seed: rawParams.seed,
-                    num_outputs: rawParams.num_outputs
+                    prompt: document.getElementById('prompt').value,
+                    negative_prompt: document.getElementById('negative_prompt').value,
+                    model: selectedModelMeta.id,
+                    width: parseInt(document.getElementById('width').value),
+                    height: parseInt(document.getElementById('height').value),
+                    num_steps: parseInt(document.getElementById('num_steps').value),
+                    guidance: parseFloat(document.getElementById('guidance').value),
+                    seed: parseInt(document.getElementById('seed').value) || Math.floor(Math.random() * 4294967295),
+                    num_outputs: parseInt(document.getElementById('num_outputs').value) || 1
                 };
-                if (selectedModelMeta?.requiresImage) params.image_url = rawParams.image_url;
-                if (selectedModelMeta?.requiresMask) params.mask_url = rawParams.mask_url;
-
-                currentImageParams = { ...params };
-
-                if (selectedModelMeta && selectedModelMeta.requiresImage && !rawParams.image_url) {
-                    showStatus('该模型需要提供输入图像URL', 'error');
-                    loadingOverlay.classList.add('hidden');
-                    initialPrompt.classList.remove('hidden');
-                    return;
-                }
-                if (selectedModelMeta && selectedModelMeta.requiresMask && !rawParams.mask_url) {
-                    showStatus('局部重绘模型需要提供遮罩URL', 'error');
-                    loadingOverlay.classList.add('hidden');
-                    initialPrompt.classList.remove('hidden');
-                    return;
-                }
 
                 try {
-                    const startTime = performance.now();
-                    let progress = 0;
-                    if (progressBarContainer && progressBar && progressText) {
-                        progressBarContainer.classList.remove('hidden');
-                        progress = 0; progressBar.style.width = '0%'; progressText.textContent = '0%';
-                        if (progressExtra) progressExtra.textContent = '估算';
-                        const steps = params.num_steps || 20;
-                        const num = params.num_outputs || 1;
-                        const pixels = (params.width || 1024) * (params.height || 1024);
-                        const baseMs = Math.max(5000, Math.min(60000, steps * Math.sqrt(pixels) / 16 + (num - 1) * 1500));
-                        const startTs = Date.now();
-                        progressTimer = setInterval(() => {
-                            const elapsed = Date.now() - startTs;
-                            const ratio = Math.min(0.95, elapsed / baseMs);
-                            const cur = Math.floor(ratio * 100);
-                            if (cur > progress) {
-                                progress = cur;
-                                progressBar.style.width = `${progress}%`;
-                                progressText.textContent = `${progress}%`;
-                            }
-                        }, 150);
+                    if (selectedModelMeta && selectedModelMeta.requiresImage) {
+                        const imageFile = document.getElementById('image_file').files[0];
+                        if (!imageFile) throw new Error('该模型需要上传输入图像');
+                        loadingStatusText.textContent = '上传输入图中...';
+                        params.image_key = await uploadImage(imageFile);
                     }
-
+                    if (selectedModelMeta && selectedModelMeta.requiresMask) {
+                        const maskFile = document.getElementById('mask_file').files[0];
+                        if (!maskFile) throw new Error('该模型需要上传遮罩图像');
+                        loadingStatusText.textContent = '上传遮罩图中...';
+                        params.mask_key = await uploadImage(maskFile);
+                    }
+                } catch (error) {
+                    showStatus(error.message, 'error');
+                    loadingOverlay.classList.add('hidden');
+                    initialPrompt.classList.remove('hidden');
+                    return;
+                }
+                
+                currentImageParams = {...params};
+                
+                try {
+                    const startTime = performance.now();
+                    loadingStatusText.textContent = '生成中，请稍候...';
+                    startProgressBar(params.num_steps);
+                    
                     pendingController = new AbortController();
-                    const timeoutId = setTimeout(() => pendingController && pendingController.abort('timeout'), 90000);
+                    const timeoutId = setTimeout(() => pendingController.abort('timeout'), 90000);
+
                     const response = await fetch('/', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Accept': 'image/*' },
+                        headers: {'Content-Type': 'application/json', 'Accept': 'image/*, application/json'},
                         body: JSON.stringify(params),
                         signal: pendingController.signal
                     });
                     clearTimeout(timeoutId);
-
+                    
                     if (!response.ok) {
-                        const contentType = response.headers.get('content-type');
-                        if (contentType?.includes('application/json')) {
-                            const errorData = await response.json();
-                            const msg = errorData.error || errorData.message || '生成失败';
-                            const details = errorData.details ? `（${errorData.details}）` : '';
-                            throw new Error(`${msg}${details}`);
-                        } else {
-                            const errorText = await response.text();
-                            console.error('Server error:', errorText);
-                            throw new Error('生成失败');
-                        }
+                        const errorData = await response.json().catch(() => ({error: '未知错误'}));
+                        throw new Error(errorData.error || `请求失败: ${response.status}`);
                     }
-
+                    
                     const respType = response.headers.get('content-type') || '';
-                    const serverSecondsHeader = response.headers.get('X-Server-Seconds');
-                    let serverSeconds = serverSecondsHeader ? parseFloat(serverSecondsHeader) : null;
-                    let base64Image = '';
-                    let imageBlob = null;
+                    const serverSeconds = parseFloat(response.headers.get('X-Server-Seconds'));
                     let imagesArray = null;
 
                     if (respType.includes('application/json')) {
                         const json = await response.json();
-                        if (Array.isArray(json.images)) {
-                            imagesArray = json.images;
-                            base64Image = imagesArray[0];
-                        } else {
-                            throw new Error('响应格式错误');
-                        }
+                        imagesArray = json.images;
                     } else {
-                        imageBlob = await response.blob();
-                        base64Image = await blobToBase64(imageBlob);
+                        const imageBlob = await response.blob();
+                        imagesArray = [await blobToBase64(imageBlob)];
                     }
-                    const endTime = performance.now();
-                    const generationTime = ((endTime - startTime) / 1000).toFixed(2);
-
+                    
+                    const generationTime = ((performance.now() - startTime) / 1000).toFixed(2);
+                    
                     const gallery = document.getElementById('imageGallery');
-                    const aiImageEl = document.getElementById('aiImage');
                     gallery.innerHTML = '';
-                    if (imagesArray && imagesArray.length > 1) {
-                        aiImageEl.classList.add('hidden');
+                    currentImagesArray = imagesArray;
+
+                    if (imagesArray.length > 1) {
+                        aiImage.classList.add('hidden');
                         gallery.classList.remove('hidden');
-                        currentImagesArray = imagesArray.slice();
                         imagesArray.forEach((src, idx) => {
                             const wrap = document.createElement('div');
                             wrap.className = 'relative group';
                             const img = document.createElement('img');
-                            img.src = src; img.alt = `生成的图像 ${idx+1}`; img.className = 'w-full h-auto rounded'; img.style.cursor = 'zoom-in';
-                            img.addEventListener('click', () => openImageModal(src));
+                            img.src = src;
+                            img.className = 'w-full h-auto rounded cursor-zoom-in';
+                            img.onclick = () => openImageModal(src);
+
                             const bar = document.createElement('div');
                             bar.className = 'absolute bottom-1 left-1 right-1 hidden group-hover:flex bg-black bg-opacity-50 text-white text-xs rounded px-1 py-0.5 gap-1 justify-center';
-                            const btnZoom = document.createElement('button'); btnZoom.innerHTML = '<i class="fa-solid fa-magnifying-glass-plus"></i>'; btnZoom.title = '放大'; btnZoom.onclick = (e) => { e.stopPropagation(); openImageModal(src); };
-                            const btnCopy = document.createElement('button'); btnCopy.innerHTML = '<i class="fa-solid fa-copy"></i>'; btnCopy.title = '复制到剪贴板'; btnCopy.onclick = async (e) => { e.stopPropagation(); try { await navigator.clipboard.writeText(src); showStatus('图片已复制到剪贴板', 'success'); } catch (_) { showStatus('复制失败', 'error'); } };
-                            const btnDl = document.createElement('button'); btnDl.innerHTML = '<i class="fa-solid fa-download"></i>'; btnDl.title = '下载此图';
-                            btnDl.onclick = async (e) => {
-                                e.stopPropagation();
-                                try {
-                                    const response = await fetch(src);
-                                    const blob = await response.blob();
-                                    const url = window.URL.createObjectURL(blob);
-                                    const link = document.createElement('a');
-                                    const model = document.getElementById('usedModel').textContent || 'ai-image';
-                                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                                    link.href = url; link.download = `${model}-${timestamp}-${idx+1}.png`;
-                                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
-                                    window.URL.revokeObjectURL(url);
-                                } catch (_) { showStatus('下载失败', 'error'); }
-                            };
-                            bar.appendChild(btnZoom); bar.appendChild(btnCopy); bar.appendChild(btnDl);
-                            wrap.appendChild(img); wrap.appendChild(bar);
+                            bar.innerHTML = `
+                                <button title="放大" onclick="event.stopPropagation(); openImageModal('${src}')"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                                <button title="下载" onclick="event.stopPropagation(); downloadImage('${src}', ${idx})"><i class="fa-solid fa-download"></i></button>`;
+                            wrap.append(img, bar);
                             gallery.appendChild(wrap);
                         });
                     } else {
                         gallery.classList.add('hidden');
-                        currentImagesArray = null;
-                        aiImageEl.src = base64Image;
+                        aiImage.src = imagesArray[0];
+                        aiImage.classList.remove('hidden');
                     }
-
-                    const finalize = () => {
-                        loadingOverlay.classList.add('hidden');
-                        if (!imagesArray || imagesArray.length <= 1) aiImageEl.classList.remove('hidden');
-
-                        const elements = {
-                            generationTime: document.getElementById('generationTime'),
-                            usedModel: document.getElementById('usedModel'),
-                            computeInfo: document.getElementById('computeInfo'),
-                            imageSize: document.getElementById('imageSize')
-                        };
-                        if (elements.generationTime) elements.generationTime.textContent = `${generationTime}秒`;
-                        const usedModelHeader = response.headers.get('X-Used-Model');
-                        const usedModelName = usedModelHeader ? getModelNameById(usedModelHeader) : getModelNameById(params.model);
-                        if (elements.usedModel) elements.usedModel.textContent = usedModelName;
-
-                        const bytesStr = response.headers.get('X-Image-Bytes');
-                        if (elements.imageSize) {
-                            if (bytesStr) {
-                                const bytes = parseInt(bytesStr, 10);
-                                elements.imageSize.textContent = formatBytes(bytes);
-                            } else if (imageBlob) {
-                                elements.imageSize.textContent = formatBytes(imageBlob.size);
-                            } else if (imagesArray && imagesArray[0]) {
-                                elements.imageSize.textContent = formatBytes(dataURLBytes(imagesArray[0]));
-                            }
-                        }
-
-                        const itPerSec = (() => {
-                            const steps = Number(params.num_steps) || 0;
-                            const seconds = serverSeconds && serverSeconds > 0 ? serverSeconds : (parseFloat(generationTime) || 0);
-                            if (steps > 0 && seconds > 0) return (steps / seconds).toFixed(2);
-                            return '-';
-                        })();
-                        if (elements.computeInfo) elements.computeInfo.textContent = `${itPerSec}`;
-
-                        updateParamsDisplay(params);
-
-                        const metaPanel = document.getElementById('imageMeta');
-                        const metaBody = document.getElementById('imageMetaBody');
-                        if (imagesArray && imagesArray.length > 0 && metaPanel && metaBody) {
-                            metaBody.innerHTML = '';
-                            const loadPromises = imagesArray.map((src, i) => new Promise((resolve) => {
-                                const probe = new Image();
-                                probe.onload = () => {
-                                    const tr = document.createElement('tr');
-                                    const sizeBytes = dataURLBytes(src);
-                                    tr.innerHTML = `<td class="py-1 pr-3">${i+1}</td><td class="py-1 pr-3">${probe.width}×${probe.height}</td><td class="py-1">${formatBytes(sizeBytes)}</td>`;
-                                    metaBody.appendChild(tr);
-                                    resolve();
-                                };
-                                probe.onerror = () => resolve();
-                                probe.src = src;
-                            }));
-                            Promise.all(loadPromises).then(() => metaPanel.classList.remove('hidden'));
-                        } else {
-                            const panel = document.getElementById('imageMeta');
-                            if (panel) panel.classList.add('hidden');
-                        }
-
-                        if (progressBarContainer && progressBar && progressText) {
-                            if (progressTimer) clearInterval(progressTimer);
-                            progressBar.style.width = '100%';
-                            progressText.textContent = '100%';
-                            setTimeout(() => progressBarContainer.classList.add('hidden'), 800);
-                        }
-
-                        showStatus(imagesArray ? `生成成功（${imagesArray.length} 张）` : '生成成功', 'success');
-                        if (copyParamsButton) copyParamsButton.classList.remove('hidden');
-                        if (downloadButton) downloadButton.classList.remove('hidden');
-                        const downloadZipButton = document.getElementById('downloadZipButton');
-                        if (downloadZipButton) {
-                            if (imagesArray && imagesArray.length > 1) downloadZipButton.classList.remove('hidden');
-                            else downloadZipButton.classList.add('hidden');
-                        }
-
-                        // 保存到历史记录
-                        const thumb = imagesArray && imagesArray.length > 0 ? imagesArray[0] : (base64Image || aiImageEl.src);
-                        if (thumb) saveHistory({ thumb, params });
-                    };
-
-                    if (imagesArray && imagesArray.length > 1) finalize();
-                    else aiImageEl.onload = finalize;
-
+                    finalizeUI(response, params, generationTime, serverSeconds, imagesArray);
                 } catch (error) {
-                    console.error('Generate error:', error);
-                    if (error && (error.name === 'AbortError' || error.message === 'timeout')) showStatus('生成超时，请尝试更换模型或降低宽高后重试', 'error');
-                    else showStatus(error.message || '生成失败', 'error');
+                    showStatus(error.name === 'AbortError' ? '生成超时' : error.message, 'error');
                     initialPrompt.classList.remove('hidden');
-                    aiImage.classList.add('hidden');
                 } finally {
                     loadingOverlay.classList.add('hidden');
-                    if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
-                    const progressBarContainer = document.getElementById('progressBarContainer');
-                    if (progressBarContainer) progressBarContainer.classList.add('hidden');
+                    if (progressTimer) clearInterval(progressTimer);
                     pendingController = null;
                 }
             });
 
-            // 本地上传到 R2
-            const imageFileInput = document.getElementById('image_file');
-            imageFileInput.addEventListener('change', async (e) => {
-                const file = e.target.files && e.target.files[0];
-                if (!file) return;
-                try {
-                    showStatus('正在上传图片到 R2...', 'info');
-                    const url = await uploadFileToR2(file, 'image');
-                    if (url) {
-                        document.getElementById('image_url').value = url;
-                        showStatus('图片已上传并填充 URL', 'success');
-                    } else {
-                        throw new Error('上传返回空URL');
-                    }
-                } catch (err) {
-                    console.error('Upload image error:', err);
-                    showStatus('上传失败', 'error');
-                } finally {
-                    imageFileInput.value = '';
+            async function uploadImage(file) {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': file.type },
+                    body: file
+                });
+                if (!response.ok) {
+                    const error = await response.json().catch(() => ({error: '上传失败'}));
+                    throw new Error(error.error || '上传图片时出错');
                 }
-            });
-
-            // 遮罩编辑器
-            const maskModal = document.getElementById('maskEditorModal');
-            const maskCanvas = document.getElementById('maskCanvas');
-            const maskBaseImg = document.getElementById('maskBaseImg');
-            const maskClear = document.getElementById('maskClear');
-            const maskApply = document.getElementById('maskApply');
-            const maskClose = document.getElementById('maskClose');
-            const brushSize = document.getElementById('brushSize');
-            const brushSizeVal = document.getElementById('brushSizeVal');
-            let drawing = false, ctx = null;
-
-            brushSize.oninput = () => { brushSizeVal.textContent = brushSize.value; };
-
-            document.getElementById('openMaskEditor').addEventListener('click', async () => {
-                const baseUrl = document.getElementById('image_url').value.trim();
-                let srcToLoad = baseUrl;
-                // 如果是 r2 链接，转换成 worker 可访问的
-                if (srcToLoad.startsWith('/r2/')) srcToLoad = window.location.origin + srcToLoad;
-                if (!srcToLoad) return showStatus('请先提供输入图像（URL或上传）', 'error');
-                try {
-                    const img = await loadImage(srcToLoad);
-                    openMaskModal(img);
-                } catch (e) {
-                    console.error('Load base image error:', e);
-                    showStatus('无法加载输入图像，请确保URL可访问', 'error');
-                }
-            });
-
-            function openMaskModal(img) {
-                maskModal.classList.remove('hidden');
-                maskBaseImg.src = img.src;
-                const maxW = 800, maxH = 600;
-                let w = img.naturalWidth, h = img.naturalHeight;
-                const ratio = Math.min(maxW / w, maxH / h, 1);
-                w = Math.floor(w * ratio); h = Math.floor(h * ratio);
-                maskCanvas.width = w; maskCanvas.height = h;
-                ctx = maskCanvas.getContext('2d');
-                ctx.clearRect(0, 0, w, h);
+                const result = await response.json();
+                return result.key;
             }
-
-            function loadImage(src) {
+            
+            function blobToBase64(blob) {
                 return new Promise((resolve, reject) => {
-                    const image = new Image();
-                    if (!src.startsWith('data:')) image.crossOrigin = 'anonymous';
-                    image.onload = () => resolve(image);
-                    image.onerror = (e) => reject(new Error(`Failed to load image from: ${src}`));
-                    image.src = src;
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
                 });
             }
 
-            function getCanvasPos(e) {
-                const rect = maskCanvas.getBoundingClientRect();
-                const x = (e.clientX - rect.left);
-                const y = (e.clientY - rect.top);
-                return { x, y };
-            }
-            
-            function drawOnCanvas(e) {
-                if (!drawing || !ctx) return;
-                const { x, y } = getCanvasPos(e);
-                ctx.save();
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(x, y, parseInt(brushSize.value), 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
+            function formatBytes(bytes) {
+                if (!bytes && bytes !== 0) return '-';
+                if (bytes === 0) return '0 B';
+                const i = Math.floor(Math.log(bytes) / Math.log(1024));
+                return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${['B', 'KB', 'MB', 'GB'][i]}`;
             }
 
-            maskCanvas.addEventListener('pointerdown', (e) => { drawing = true; drawOnCanvas(e); });
-            maskCanvas.addEventListener('pointermove', drawOnCanvas);
-            maskCanvas.addEventListener('pointerup', () => { drawing = false; });
-            maskCanvas.addEventListener('pointerleave', () => { drawing = false; });
-
-            maskClear.addEventListener('click', () => {
-                if (!ctx) return;
-                ctx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
-            });
-
-            maskApply.addEventListener('click', async () => {
-                if (!ctx) return;
-                try {
-                    const blob = await new Promise(resolve => maskCanvas.toBlob(resolve, 'image/png'));
-                    const file = new File([blob], 'mask.png', { type: 'image/png' });
-                    showStatus('正在上传遮罩到 R2...', 'info');
-                    const url = await uploadFileToR2(file, 'mask');
-                    if (url) {
-                        document.getElementById('mask_url').value = url;
-                        showStatus('遮罩已上传并填充 URL', 'success');
-                        closeMaskModal();
-                    } else {
-                        throw new Error('上传返回空URL');
-                    }
-                } catch (e) {
-                    console.error('Mask export/upload error:', e);
-                    showStatus('遮罩上传失败', 'error');
-                }
-            });
-
-            function closeMaskModal() { maskModal.classList.add('hidden'); }
-            maskClose.addEventListener('click', closeMaskModal);
-            maskModal.addEventListener('click', (e) => { if (e.target === maskModal) closeMaskModal(); });
-            window.addEventListener('keydown', (e) => { if (!maskModal.classList.contains('hidden') && e.key === 'Escape') closeMaskModal(); });
-
-            // 上传到 R2
-            async function uploadFileToR2(file, kind) {
-                const fd = new FormData();
-                if (kind === 'mask') fd.append('mask', file, file.name || 'mask.png');
-                else fd.append('image', file, file.name || 'image.png');
-                const resp = await fetch('/api/upload', { method: 'POST', body: fd });
-                if (!resp.ok) {
-                    try { const err = await resp.json(); console.error('Upload failed:', err); } catch (_) {}
-                    return '';
-                }
-                const data = await resp.json();
-                if (kind === 'mask') return data.mask_url || '';
-                return data.image_url || '';
+            function dataURLBytes(dataURL) {
+                try { return Math.floor((dataURL.split(',')[1] || '').length * 3 / 4); } catch (_) { return 0; }
             }
 
-            // 辅助函数
-            function blobToBase64(blob) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onloadend = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(blob); }); }
-            function formatBytes(bytes) { if (!bytes && bytes !== 0) return '-'; const sizes = ['B', 'KB', 'MB', 'GB']; if (bytes === 0) return '0 B'; const i = Math.floor(Math.log(bytes) / Math.log(1024)); const val = (bytes / Math.pow(1024, i)).toFixed(2); return `${val} ${sizes[i]}`; }
-            function dataURLBytes(dataURL) { try { const base64 = dataURL.split(',')[1] || ''; return Math.floor((base64.length * 3) / 4); } catch (_) { return 0; } }
-            function getModelNameById(id) { const model = availableModels.find(m => m.id === id); return model ? model.name : id; }
-
-            // 放大预览
-            function openImageModal(src) {
-                const existing = document.getElementById('imgModal');
-                if (existing) existing.remove();
+            window.openImageModal = function(src) {
+                document.getElementById('imgModal')?.remove();
                 const modal = document.createElement('div');
                 modal.id = 'imgModal';
-                modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;';
+                modal.className = "fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000]";
                 modal.innerHTML = `<div class="max-w-5xl max-h-[90vh] p-2"><img src="${src}" class="rounded shadow-lg max-h-[85vh] mx-auto" /><div class="text-center mt-2"><button id="closeImgModal" class="btn btn-secondary">关闭</button></div></div>`;
                 document.body.appendChild(modal);
                 document.getElementById('closeImgModal').onclick = () => modal.remove();
-                modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+                modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
             }
 
-            // 更新参数显示徽章
+            window.downloadImage = async function(src, index) {
+                try {
+                    const blob = await (await fetch(src)).blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    const model = getModelNameById(currentImageParams.model) || 'ai-image';
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                    link.download = `${model}-${timestamp}-${index+1}.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                } catch (_) { showStatus('下载失败', 'error'); }
+            }
+            
+            function getModelNameById(id) {
+                const model = availableModels.find(m => m.id === id);
+                return model ? model.name : id;
+            }
+            
             function updateParamsDisplay(params) {
-                const container = document.getElementById('allParamsContainer');
-                const el = document.getElementById('allParams');
-                if (!container || !el) return;
-                el.innerHTML = '';
-                for (const [key, value] of Object.entries(params)) {
-                    if (key === 'password') continue;
+                const allParamsElement = document.getElementById('allParams');
+                allParamsElement.innerHTML = '';
+                Object.entries(params).forEach(([key, value]) => {
+                    if (key.endsWith('_key')) return;
                     const badge = document.createElement('div');
                     badge.className = 'param-badge';
-                    badge.innerHTML = `<span class="font-medium">${formatParamName(key)}:</span> ${value}`;
-                    el.appendChild(badge);
-                }
-                container.classList.remove('hidden');
+                    badge.innerHTML = `<span class="font-medium">${formatParamName(key)}:</span> ${key === 'model' ? getModelNameById(value) : value}`;
+                    allParamsElement.appendChild(badge);
+                });
+                document.getElementById('allParamsContainer').classList.remove('hidden');
             }
 
-            // 状态提示
+            function finalizeUI(response, params, generationTime, serverSeconds, imagesArray) {
+                document.getElementById('generationTime').textContent = `${generationTime}秒`;
+                document.getElementById('usedModel').textContent = getModelNameById(params.model);
+                const steps = Number(params.num_steps) || 0;
+                const seconds = serverSeconds > 0 ? serverSeconds : parseFloat(generationTime);
+                document.getElementById('computeInfo').textContent = (steps > 0 && seconds > 0) ? (steps / seconds).toFixed(2) : '-';
+                
+                const metaBody = document.getElementById('imageMetaBody');
+                metaBody.innerHTML = '';
+                imagesArray.forEach((src, i) => {
+                    const probe = new Image();
+                    probe.onload = () => {
+                        const tr = metaBody.insertRow();
+                        tr.innerHTML = `<td class="py-1 pr-3">${i+1}</td><td class="py-1 pr-3">${probe.width}×${probe.height}</td><td class="py-1">${formatBytes(dataURLBytes(src))}</td>`;
+                    };
+                    probe.src = src;
+                });
+                document.getElementById('imageMeta').classList.remove('hidden');
+                
+                document.getElementById('imageSize').textContent = formatBytes(dataURLBytes(imagesArray[0]));
+                
+                updateParamsDisplay(params);
+                showStatus(imagesArray.length > 1 ? `生成成功（${imagesArray.length} 张）` : '生成成功', 'success');
+                document.getElementById('copyParamsButton').classList.remove('hidden');
+                document.getElementById('downloadButton').classList.remove('hidden');
+                document.getElementById('downloadZipButton').classList.toggle('hidden', imagesArray.length <= 1);
+
+                if (progressTimer) clearInterval(progressTimer);
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = '100%';
+                document.getElementById('progressText').textContent = '100%';
+                setTimeout(() => document.getElementById('progressBarContainer').classList.add('hidden'), 800);
+            }
+
+            function startProgressBar(steps) {
+                const progressBarContainer = document.getElementById('progressBarContainer');
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progressText');
+                progressBarContainer.classList.remove('hidden');
+                let progress = 0;
+                progressBar.style.width = '0%';
+                progressText.textContent = '0%';
+                const baseMs = Math.max(4000, Math.min(20000, steps * 600));
+                const startTs = Date.now();
+                progressTimer = setInterval(() => {
+                    const ratio = Math.min(0.95, (Date.now() - startTs) / baseMs);
+                    progress = Math.floor(ratio * 100);
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${progress}%`;
+                }, 150);
+            }
+            
             function showStatus(message, type = 'info') {
                 const statusElement = document.getElementById('imageStatus');
-                if (!statusElement) return;
-                statusElement.className = '';
-                const styles = {
+                statusElement.className = 'absolute bottom-4 left-4 z-20 py-1 px-3 rounded-full text-sm font-medium shadow-lg transition-all duration-300';
+                const colors = {
                     success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
                     error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
                     warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100',
                     info: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100'
                 };
-                statusElement.classList.add(...(styles[type] || styles.info).split(' '));
+                statusElement.classList.add(...colors[type].split(' '));
                 statusElement.textContent = message;
                 statusElement.classList.remove('hidden');
-                setTimeout(() => { statusElement.classList.add('hidden'); }, 5000);
+                setTimeout(() => statusElement.classList.add('hidden'), 5000);
             }
-
-            // 历史记录
-            const HISTORY_KEY = 'gen_history_v2';
-            const historyGrid = document.getElementById('historyGrid');
-            const historyEmpty = document.getElementById('historyEmpty');
-            const historyCount = document.getElementById('historyCount');
-            function loadHistory() { try { const raw = localStorage.getItem(HISTORY_KEY); const list = raw ? JSON.parse(raw) : []; return Array.isArray(list) ? list : []; } catch (_) { return []; } }
-            function saveHistoryItemList(list) { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 10))); }
-            function renderHistory() {
-                const list = loadHistory();
-                historyGrid.innerHTML = '';
-                if (list.length === 0) { historyEmpty.classList.remove('hidden'); }
-                else {
-                    historyEmpty.classList.add('hidden');
-                    list.forEach((item, idx) => {
-                        const cell = document.createElement('div');
-                        cell.className = 'relative group cursor-pointer';
-                        cell.title = `${item.params && item.params.prompt ? item.params.prompt.slice(0, 60) + '...' : ''}`;
-                        cell.innerHTML = `
-                            <img src="${item.thumb}" class="w-full h-20 object-cover rounded" alt="历史缩略图${idx+1}" />
-                            <div class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded">
-                                <i class="fa-solid fa-repeat text-white text-lg"></i>
-                            </div>`;
-                        cell.addEventListener('click', () => { restoreParams(item.params || {}); showStatus('参数已从历史记录恢复', 'success'); });
-                        historyGrid.appendChild(cell);
-                    });
-                }
-                historyCount.textContent = `${list.length} 条`;
-            }
-            function saveHistory(record) { const list = loadHistory(); list.unshift({ time: Date.now(), ...record }); saveHistoryItemList(list); renderHistory(); }
-            function restoreParams(params) {
-                const setVal = (id, val) => { const el = document.getElementById(id); if (el) { el.value = val; if (el.type === 'range') el.dispatchEvent(new Event('input')); } };
-                if (typeof params.prompt === 'string') setVal('prompt', params.prompt);
-                if (typeof params.negative_prompt === 'string') setVal('negative_prompt', params.negative_prompt);
-                if (typeof params.model === 'string') { setVal('model', params.model); syncImg2ImgFields(); }
-                if (typeof params.width === 'number') setVal('width', params.width);
-                if (typeof params.height === 'number') setVal('height', params.height);
-                if (typeof params.num_steps === 'number') setVal('num_steps', params.num_steps);
-                if (typeof params.guidance === 'number') setVal('guidance', params.guidance);
-                if (typeof params.seed === 'number') setVal('seed', params.seed);
-                if (typeof params.num_outputs === 'number') setVal('num_outputs', params.num_outputs);
-                if (typeof params.image_url === 'string') setVal('image_url', params.image_url);
-                if (typeof params.mask_url === 'string') setVal('mask_url', params.mask_url);
-            }
-            document.getElementById('clearHistory').addEventListener('click', () => { localStorage.removeItem(HISTORY_KEY); renderHistory(); showStatus('历史记录已清空', 'success'); });
-            renderHistory();
         });
 
-        // 登录遮罩
         function showLogin() {
             if (document.getElementById('loginOverlay')) return;
             const overlay = document.createElement('div');
             overlay.id = 'loginOverlay';
-            overlay.style.cssText = 'position:fixed;inset:0;backdrop-filter:blur(3px);background:rgba(0,0,0,0.4);z-index:1000;';
-            overlay.innerHTML = `<div class="w-full h-full flex items-center justify-center"><div class="card p-6 w-96 bg-white dark:bg-gray-800"><h3 class="text-lg font-semibold mb-4">请输入访问密码</h3><input type="password" id="loginPassword" class="w-full" placeholder="访问密码" /><button id="loginButton" class="btn btn-primary w-full mt-4">登录</button><p id="loginError" class="text-red-500 text-sm mt-2 hidden">密码错误</p></div></div>`;
+            overlay.className = "fixed inset-0 backdrop-blur-sm bg-black bg-opacity-40 z-[1000] flex items-center justify-center";
+            overlay.innerHTML = `
+                <div class="card p-6 w-96 bg-white dark:bg-gray-800">
+                    <h3 class="text-lg font-semibold mb-4">请输入访问密码</h3>
+                    <input type="password" id="loginPassword" class="w-full" placeholder="访问密码" />
+                    <button id="loginButton" class="btn btn-primary w-full mt-4">登录</button>
+                    <p id="loginError" class="text-red-500 text-sm mt-2 hidden">密码错误</p>
+                </div>`;
             document.body.appendChild(overlay);
-            document.getElementById('loginPassword').focus();
+            const passwordInput = document.getElementById('loginPassword');
+            const submitButton = document.getElementById('loginButton');
+            const errorMsg = document.getElementById('loginError');
+            passwordInput.focus();
             const submitLogin = async () => {
-                const pwd = (document.getElementById('loginPassword').value || '').trim();
                 try {
-                    const resp = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pwd }) });
-                    if (!resp.ok) { document.getElementById('loginError').classList.remove('hidden'); return; }
+                    const resp = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password: passwordInput.value })
+                    });
+                    if (!resp.ok) {
+                        errorMsg.classList.remove('hidden');
+                        return;
+                    }
                     overlay.remove();
-                } catch (_) { document.getElementById('loginError').classList.remove('hidden'); }
+                } catch (_) { errorMsg.classList.remove('hidden'); }
             };
-            document.getElementById('loginButton').addEventListener('click', submitLogin);
-            document.getElementById('loginPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') submitLogin(); });
+            submitButton.addEventListener('click', submitLogin);
+            passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitLogin(); });
         }
     </script>
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0b6ba2410bcd469da5b750e02c8e512a","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
