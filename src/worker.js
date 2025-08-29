@@ -1,8 +1,8 @@
 /**
  * @author: kared
  * @create_date: 2025-05-10 21:15:59
- * @last_editors: 10000
- * @last_edit_time: 2025-08-29 14:20:00
+ * @last_editors: kared
+ * @last_edit_time: 2025-08-29 12:30:00
  * @description: This Cloudflare Worker script handles image generation, file uploads to R2, and basic rate limiting.
  */
 
@@ -122,7 +122,7 @@ function checkRateLimit(ip, imagesRequested, limit = 5) {
 }
 
 /**
- * 猜测 Content-Type（基于扩展名）
+ * 解析 Content-Type 以决定响应类型
  */
 function guessContentTypeByExt(key) {
   const lower = key.toLowerCase();
@@ -139,24 +139,6 @@ function guessContentTypeByExt(key) {
 async function fileToUint8(file) {
   const buf = await file.arrayBuffer();
   return new Uint8Array(buf);
-}
-
-/**
- * 解析 dataURL 为字节与类型（支持 data:image/...;base64,xxx）
- */
-function parseDataURL(dataURL) {
-  const m = /^data:([^;]+);base64,(.*)$/i.exec(dataURL);
-  if (!m) return { error: 'Invalid data URL' };
-  const contentType = m[1];
-  const base64 = m[2];
-  try {
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    return { bytes, contentType, size: bytes.length };
-  } catch (e) {
-    return { error: 'Failed to decode base64' };
-  }
 }
 
 export default {
@@ -286,7 +268,7 @@ export default {
         const key = decodeURIComponent(path.replace('/r2/', ''));
         if (!key || key.includes('..')) return new Response('Bad key', { status: 400 });
         const obj = await env.IMAGE_BUCKET.get(key);
-        if (!obj) return new Response('Not Found', { status: 404, headers: corsHeaders });
+        if (!obj) return new Response('Not Found', { status: 404 });
         const ct = obj.httpMetadata?.contentType || guessContentTypeByExt(key);
         const headers = {
           ...corsHeaders,
@@ -298,10 +280,12 @@ export default {
 
       // 核心生成接口（POST /）
       if (request.method === 'POST' && path === '/') {
-        // 仅允许 Cookie 认证；不再接受 body 携带密码
-        if (REQUIRE_PASSWORD && !isAuthed()) return unauthorized();
-
+        // 身份校验：优先 Cookie，若未登录且启用密码，可允许 body 附带 password 首次使用
         const bodyData = await request.json().catch(() => ({}));
+        if (REQUIRE_PASSWORD) {
+          const authed = isAuthed() || (bodyData && typeof bodyData.password === 'string' && bodyData.password === PASSWORD);
+          if (!authed) return unauthorized();
+        }
 
         // 速率限制：按 IP 与请求图片张数
         const ip = getClientIP(request);
@@ -315,34 +299,18 @@ export default {
           );
         }
 
-        // 参数校验（强制非空 prompt，移除任何默认 "cyberpunk cat" 回退）
+        // 参数校验
         if (!('prompt' in bodyData) || !('model' in bodyData)) {
           return json({ error: 'Missing required parameter: prompt or model' }, 400);
-        }
-        const promptText = String(bodyData.prompt || '').trim();
-        if (promptText.length === 0) {
-          return json({ error: 'Prompt is required' }, 400);
         }
         const selectedModel = AVAILABLE_MODELS.find(m => m.id === bodyData.model);
         if (!selectedModel) {
           return json({ error: 'Model is invalid' }, 400);
         }
 
-        // 工具函数：将 image_url 解析为字节（支持 dataURL、相对路径、r2 路径与绝对 URL）
+        // 工具函数：下载远程图片为二进制（增加安全校验与大小限制）
         const fetchImageToBytes = async (srcUrl, label) => {
-          if (!srcUrl || typeof srcUrl !== 'string') return { error: `${label} url invalid` };
-          let finalUrl = srcUrl.trim();
-          if (finalUrl.startsWith('data:')) {
-            const parsed = parseDataURL(finalUrl);
-            if (parsed.error) return { error: `${label} ${parsed.error}` };
-            return parsed;
-          }
-          if (finalUrl.startsWith('r2/')) {
-            finalUrl = `${url.origin}/${finalUrl}`;
-          } else if (finalUrl.startsWith('/')) {
-            finalUrl = `${url.origin}${finalUrl}`;
-          }
-          const resp = await fetch(finalUrl);
+          const resp = await fetch(srcUrl);
           if (!resp.ok) {
             return { error: `${label} fetch failed, HTTP ${resp.status}` };
           }
@@ -364,7 +332,10 @@ export default {
           }
           const bytes = new Uint8Array(total);
           let offset = 0;
-          for (const c of chunks) { bytes.set(c, offset); offset += c.byteLength; }
+          for (const c of chunks) {
+            bytes.set(c, offset);
+            offset += c.byteLength;
+          }
           return { bytes, contentType: ct, size: total };
         };
 
@@ -385,8 +356,7 @@ export default {
           if (steps >= 8) steps = 8;
           else if (steps <= 4) steps = 4;
           inputs = {
-            // 不再使用默认样例，直接使用用户 prompt
-            prompt: promptText,
+            prompt: bodyData.prompt || 'cyberpunk cat',
             steps
           };
         } else if (
@@ -396,7 +366,6 @@ export default {
           if (!bodyData.image_url) {
             return json({ error: '该模型需要提供 image_url 参数（输入图像 URL）' }, 400);
           }
-          // 兼容 dataURL、本地相对路径与 /r2/... 路径
           const imageResult = await fetchImageToBytes(bodyData.image_url, '输入图像');
           if (imageResult.error) return json({ error: imageResult.error }, 400);
 
@@ -411,7 +380,7 @@ export default {
           }
 
           inputs = {
-            prompt: promptText,
+            prompt: bodyData.prompt || 'cyberpunk cat',
             negative_prompt: bodyData.negative_prompt || '',
             height: sanitizeDimension(parseInt(bodyData.height, 10) || 512, 512),
             width: sanitizeDimension(parseInt(bodyData.width, 10) || 512, 512),
@@ -419,12 +388,12 @@ export default {
             strength: clamp(parseFloat(bodyData.strength ?? 0.8), 0.0, 1.0),
             guidance: clamp(parseFloat(bodyData.guidance ?? 7.5), 0.0, 30.0),
             seed: bodyData.seed || parseInt((Math.random() * 1024 * 1024).toString(), 10),
-            image: imageResult.bytes ? [...imageResult.bytes] : undefined,
+            image: [...imageResult.bytes],
             ...(maskBytes ? { mask: [...maskBytes], mask_image: [...maskBytes] } : {})
           };
         } else {
           inputs = {
-            prompt: promptText,
+            prompt: bodyData.prompt || 'cyberpunk cat',
             negative_prompt: bodyData.negative_prompt || '',
             height: sanitizeDimension(parseInt(bodyData.height, 10) || 1024, 1024),
             width: sanitizeDimension(parseInt(bodyData.width, 10) || 1024, 1024),
