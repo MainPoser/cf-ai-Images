@@ -1,7 +1,7 @@
 ✨✨ 基于 Cloudflare AI & Workers 的免费在线文生图服务
 
 <p align="center">
-  <a href="https://text-to-image-template.templates.workers.dev/" target="_blank" rel="noopener">
+  <a href="#" target="_blank" rel="noopener">
     
   </a>
 </p>
@@ -21,9 +21,8 @@
 #🚀🚀-快速开始
 #📝📝-使用指南
 #⚙⚙️-配置选项
-#📊📊-模型限制
 
-https://text2img.huarzone.com/
+#📊📊-模型限制
 
 </div>
 
@@ -38,9 +37,7 @@ https://text2img.huarzone.com/
 
 📚📚 项目简介
 
-Text2img-Cloudflare-Workers 是基于 Cloudflare Workers AI 服务搭建的在线文本生成图像可视化网页，完全构建在 Cloudflare Workers 上。该项目通过调用 Cloudflare 官方提供的 https://developers.cloudflare.com/workers-ai/models/ 模型，可以快速实现随时随地无需登录的图像生成需求。
-
-体验地址：https://text2img.huarzone.com/
+本项目是基于 https://github.com/huarzone/Text2img-Cloudflare-Workers 的增强版本，在原始基础上增加了多项实用功能。这是一个完全构建在 Cloudflare Workers 上的在线文本生成图像服务，通过调用 Cloudflare 官方提供的 https://developers.cloudflare.com/workers-ai/models/ 模型，实现无需登录的图像生成。
 
 ✨✨ 主要特性
 
@@ -52,9 +49,9 @@ Text2img-Cloudflare-Workers 是基于 Cloudflare Workers AI 服务搭建的在�
 
 • ⚙⚙⚙️ 支持图像生成的高级选项设置（尺寸、步数、引导系数等）
 
-• 🖼️🖼️ 支持上传参考图进行图生图（img2img）和局部重绘（inpainting）
+• 🖼️🖼️ 新增：支持上传参考图进行图生图（img2img）和局部重绘（inpainting）
 
-• 🔢🔢 支持批量生成（一次生成多张图片）并打包下载
+• 🔢🔢 新增：支持批量生成（一次生成多张图片）并打包下载
 
 • 🔐🔐 支持设置访问密码，私有化部署友好
 
@@ -66,7 +63,7 @@ Text2img-Cloudflare-Workers 是基于 Cloudflare Workers AI 服务搭建的在�
 
 • 📱📱 移动端友好，支持各种设备访问
 
-• 📜📜 生成历史记录功能，可随时复用参数
+• 📜📜 新增：生成历史记录功能，可随时复用参数
 
 🚀🚀🚀 快速开始
 
@@ -207,6 +204,8 @@ Text2img-Cloudflare-Workers 是基于 Cloudflare Workers AI 服务搭建的在�
 
 🙏🙏 致谢
 
+• 原始项目: https://github.com/huarzone/Text2img-Cloudflare-Workers
+
 • https://workers.cloudflare.com/
 
 • https://developers.cloudflare.com/workers-ai/
@@ -214,5 +213,5 @@ Text2img-Cloudflare-Workers 是基于 Cloudflare Workers AI 服务搭建的在�
 • https://stuk.github.io/jszip/ - 用于打包多张图片
 
 <div align="center">
-  基于 Cloudflare Workers 构建的开源项目 | 欢迎提交反馈和贡献代码
+  基于 Cloudflare Workers 构建的开源项目 | 此项目是原始项目的增强版本
 </div>
