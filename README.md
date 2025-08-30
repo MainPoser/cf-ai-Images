@@ -41,20 +41,20 @@
 
 > 前置条件：一个有效的 Cloudflare 账号。以下步骤在 Cloudflare 控制台中操作。
 
-### 第 1 步：准备（Cloudflare 控制台）
-1. 创建 R2 存储桶（用于图片上传）
-   - Cloudflare 控制台 → R2 → 创建存储桶（示例名称：`ai-image`）。
-2. 创建 KV 命名空间（用于速率限制）
-   - Cloudflare 控制台 → Workers & Pages → KV → 创建命名空间（示例名称：`AI_RATE_LIMITER`）。
 
----
-
-### 第 2 步：部署 Worker 并上传代码
+### 第 1 步：部署 Worker 并上传代码
 1. 创建 Worker 服务  
    - Cloudflare 控制台 → Workers & Pages → 创建应用程序 → 创建 Worker。为 Worker 选择唯一子域名并部署。
 2. 上传代码文件  
    - 点击“编辑代码”进入在线编辑器。将本项目的 `worker.js` 代码完整粘贴到默认文件（如 `index.js` 或 `_worker.js`）中，替换原有内容。  
    - 新建文件 `index.html`，将本项目的 `index.html` 内容完整粘贴进去。
+---
+
+### 第 2 步：准备（Cloudflare 控制台）
+1. 创建 R2 存储桶（用于图片上传）
+   - Cloudflare 控制台 → R2 → 创建存储桶（示例名称：`ai-image`）。
+2. 创建 KV 命名空间（用于速率限制）
+   - Cloudflare 控制台 → Workers & Pages → KV → 创建命名空间（示例名称：`AI_RATE_LIMITER`）。
 
 ---
 
