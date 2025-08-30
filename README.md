@@ -5,8 +5,8 @@
 
 本项目基于并借鉴了以下优秀开源项目的工作，在此表示感谢：
 
-- zhumengkang/cf-ai-image — https://github.com/zhumengkang/cf-ai-image  
 - huarzone/Text2img-Cloudflare-Workers — https://github.com/huarzone/Text2img-Cloudflare-Workers
+- zhumengkang/cf-ai-image — https://github.com/zhumengkang/cf-ai-image  
 
 ---
 一个功能强大、开箱即用的在线「文生图 / 图生图」服务，完全基于 Cloudflare Workers AI 平台构建，侧重隐私保护、易用性与企业级安全配置。
