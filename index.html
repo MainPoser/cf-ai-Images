@@ -370,7 +370,7 @@
                     guidanceSlider.dispatchEvent(new Event('input'));
                 }
 
-                // 修复点：SDXL 时将分辨率上限改为 1024，并限制生成数量最多 2
+                // 修复点：SDXL 时将分辨率上限改为 1024
                 const isSDXL = selectedModelId === 'stable-diffusion-xl-base-1.0';
                 const widthSlider = document.getElementById('width');
                 const heightSlider = document.getElementById('height');
@@ -389,9 +389,11 @@
                 heightValue.textContent = `${heightSlider.value}px`;
 
                 Array.from(numOutputsSel.options).forEach(opt => {
-                    if (['4','8'].includes(opt.value)) opt.disabled = isSDXL;
+                    // 修复点：移除SDXL对4和8的限制，允许所有模型生成最多8张图像
+                    if (['4','8'].includes(opt.value)) opt.disabled = false;
                 });
-                if (isSDXL && parseInt(numOutputsSel.value) > 2) numOutputsSel.value = '2';
+                // 修复点：移除SDXL最多2张图像的限制
+                // if (isSDXL && parseInt(numOutputsSel.value) > 2) numOutputsSel.value = '2';
             });
 
             ['width', 'height', 'num_steps', 'guidance'].forEach(id => {

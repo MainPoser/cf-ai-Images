@@ -313,8 +313,8 @@ export default {
           console.log(`使用模型 ${model} 生成图片，提示词: ${inputs.prompt.substring(0, 50)}...`);
           
           try {
-            // 修复点：SDXL 并发限制为最多 2
-            const hardMax = (data.model === 'stable-diffusion-xl-base-1.0') ? 2 : 8;
+            // 修复点：SDXL 并发限制提升至 8，与其他模型保持一致
+            const hardMax = (data.model === 'stable-diffusion-xl-base-1.0') ? 8 : 8;
             const numOutputs = clamp(parseInt(data.num_outputs, 10) || 1, 1, hardMax);
 
             const generateOnce = async (seedOffset = 0) => {
