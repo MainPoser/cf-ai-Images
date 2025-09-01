@@ -132,6 +132,13 @@
                             <input type="file" id="mask_file" class="w-full" accept="image/png, image/jpeg, image/webp">
                             <span id="mask_file_name" class="file-name">未选择文件</span>
                         </div>
+                        <div>
+                            <div class="flex justify-between items-center">
+                                <label for="strength" class="block text-sm font-medium flex items-center tooltip"><i class="fa-solid fa-sliders mr-1 text-xs"></i> 变换强度<span class="tooltiptext">控制对原图的变换程度，0.0保持原样，1.0完全重绘</span></label>
+                                <span id="strengthValue" class="text-sm font-mono">0.8</span>
+                            </div>
+                            <input type="range" id="strength" min="0" max="1" step="0.1" value="0.8" class="slider w-full">
+                        </div>
                     </div>
                 </div>
                 
@@ -370,7 +377,7 @@
                     guidanceSlider.dispatchEvent(new Event('input'));
                 }
 
-                // 修复点：SDXL 时将分辨率上限改为 1024，并限制生成数量最多 2
+                // 修复点：SDXL 时将分辨率上限改为 1024
                 const isSDXL = selectedModelId === 'stable-diffusion-xl-base-1.0';
                 const widthSlider = document.getElementById('width');
                 const heightSlider = document.getElementById('height');
@@ -389,17 +396,19 @@
                 heightValue.textContent = `${heightSlider.value}px`;
 
                 Array.from(numOutputsSel.options).forEach(opt => {
-                    if (['4','8'].includes(opt.value)) opt.disabled = isSDXL;
+                    // 修复点：移除SDXL对4和8的限制，允许所有模型生成最多8张图像
+                    if (['4','8'].includes(opt.value)) opt.disabled = false;
                 });
-                if (isSDXL && parseInt(numOutputsSel.value) > 2) numOutputsSel.value = '2';
+                // 修复点：移除SDXL最多2张图像的限制
+                // if (isSDXL && parseInt(numOutputsSel.value) > 2) numOutputsSel.value = '2';
             });
 
-            ['width', 'height', 'num_steps', 'guidance'].forEach(id => {
+            ['width', 'height', 'num_steps', 'guidance', 'strength'].forEach(id => {
                 const slider = document.getElementById(id);
                 const valueDisplay = document.getElementById(`${id}Value`);
                 slider.addEventListener('input', () => {
                     const unit = (id === 'width' || id === 'height') ? 'px' : '';
-                    const fixed = (id === 'guidance') ? 1 : 0;
+                    const fixed = (id === 'guidance' || id === 'strength') ? 1 : 0;
                     valueDisplay.textContent = `${parseFloat(slider.value).toFixed(fixed)}${unit}`;
                 });
             });
@@ -432,7 +441,7 @@
             });
             
             function formatParamName(name) {
-                const nameMap = {'prompt':'正向提示词','negative_prompt':'反向提示词','model':'模型','width':'宽度','height':'高度','num_steps':'步数','guidance':'引导系数','seed':'种子'};
+                const nameMap = {'prompt':'正向提示词','negative_prompt':'反向提示词','model':'模型','width':'宽度','height':'高度','num_steps':'步数','guidance':'引导系数','seed':'种子','strength':'变换强度'};
                 return nameMap[name] || name;
             }
             
@@ -492,6 +501,11 @@
                     seed: parseInt(document.getElementById('seed').value) || Math.floor(Math.random() * 4294967295),
                     num_outputs: parseInt(document.getElementById('num_outputs').value) || 1
                 };
+
+                // 对于图生图和局部重绘模型，添加strength参数
+                if (selectedModelMeta && selectedModelMeta.requiresImage) {
+                    params.strength = parseFloat(document.getElementById('strength').value);
+                }
 
                 try {
                     if (selectedModelMeta && selectedModelMeta.requiresImage) {
