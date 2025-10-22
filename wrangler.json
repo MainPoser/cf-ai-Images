@@ -1,0 +1,12 @@
+{
+	"compatibility_date": "2025-10-22",
+	"main": "worker.js",
+	"name": "cf-ai-image",
+	"upload_source_maps": true,
+	"ai": {
+		"binding": "AI"
+	},
+	"observability": {
+		"enabled": true
+	}
+}
